@@ -1,0 +1,319 @@
+# Logging Configuration for MetaTrader Python Framework
+# This file defines the logging configuration using Python's logging.config format
+
+version: 1
+disable_existing_loggers: false
+
+formatters:
+  standard:
+    format: "%(asctime)s [%(levelname)8s] %(name)s: %(message)s"
+    datefmt: "%Y-%m-%d %H:%M:%S"
+
+  detailed:
+    format: "%(asctime)s [%(levelname)8s] %(name)s:%(lineno)d: %(message)s"
+    datefmt: "%Y-%m-%d %H:%M:%S"
+
+  json:
+    "()": "src.core.logging.formatters.JsonFormatter"
+    datefmt: "%Y-%m-%dT%H:%M:%S"
+
+  structured:
+    "()": "src.core.logging.formatters.StructuredFormatter"
+    datefmt: "%H:%M:%S"
+    use_colors: true
+
+  colored:
+    "()": "src.core.logging.formatters.ColoredFormatter"
+    format: "%(asctime)s [%(levelname)8s] %(name)s: %(message)s"
+    datefmt: "%H:%M:%S"
+
+  trading:
+    "()": "src.core.logging.formatters.TradingFormatter"
+    format: "%(asctime)s [%(levelname)8s] %(name)s: %(message)s"
+    datefmt: "%Y-%m-%d %H:%M:%S"
+    include_context: true
+
+  filtered:
+    "()": "src.core.logging.formatters.FilteredFormatter"
+    format: "%(asctime)s [%(levelname)8s] %(name)s: %(message)s"
+    datefmt: "%Y-%m-%d %H:%M:%S"
+    sensitive_fields:
+      - password
+      - token
+      - key
+      - secret
+      - credential
+      - login
+      - auth
+      - api_key
+      - session
+
+filters:
+  trading_only:
+    "()": "logging.Filter"
+    name: "src.trading"
+
+  error_only:
+    "()": "logging.Filter"
+    name: ""
+
+handlers:
+  console:
+    class: "logging.StreamHandler"
+    level: INFO
+    formatter: standard
+    stream: "ext://sys.stderr"
+
+  rich_console:
+    "()": "src.core.logging.handlers.RichHandler"
+    level: DEBUG
+    show_time: true
+    show_level: true
+    show_path: true
+    markup: true
+    rich_tracebacks: true
+
+  file:
+    class: "logging.handlers.RotatingFileHandler"
+    level: DEBUG
+    formatter: detailed
+    filename: "logs/application.log"
+    maxBytes: 10485760  # 10MB
+    backupCount: 5
+    encoding: "utf-8"
+
+  async_file:
+    "()": "src.core.logging.handlers.AsyncFileHandler"
+    level: DEBUG
+    formatter: detailed
+    filename: "logs/async.log"
+    encoding: "utf-8"
+    queue_size: 1000
+
+  rotating_async_file:
+    "()": "src.core.logging.handlers.RotatingAsyncFileHandler"
+    level: DEBUG
+    formatter: detailed
+    filename: "logs/rotating_async.log"
+    max_bytes: 10485760  # 10MB
+    backup_count: 5
+    encoding: "utf-8"
+    queue_size: 1000
+
+  error_file:
+    class: "logging.handlers.RotatingFileHandler"
+    level: ERROR
+    formatter: detailed
+    filename: "logs/error.log"
+    maxBytes: 10485760  # 10MB
+    backupCount: 5
+    encoding: "utf-8"
+
+  trading_file:
+    "()": "src.core.logging.handlers.TradingHandler"
+    target_handler:
+      class: "logging.handlers.RotatingFileHandler"
+      level: INFO
+      formatter: trading
+      filename: "logs/trading.log"
+      maxBytes: 52428800  # 50MB
+      backupCount: 10
+      encoding: "utf-8"
+    include_context: true
+    separate_trades: true
+
+  json_file:
+    class: "logging.FileHandler"
+    level: INFO
+    formatter: json
+    filename: "logs/structured.json"
+    encoding: "utf-8"
+
+  buffered_file:
+    "()": "src.core.logging.handlers.BufferedHandler"
+    target_handler:
+      class: "logging.FileHandler"
+      level: INFO
+      formatter: detailed
+      filename: "logs/buffered.log"
+      encoding: "utf-8"
+    buffer_size: 100
+    flush_interval: 30.0
+
+  security_file:
+    "()": "src.core.logging.handlers.FilteredHandler"
+    target_handler:
+      class: "logging.handlers.RotatingFileHandler"
+      level: WARNING
+      formatter: filtered
+      filename: "logs/security.log"
+      maxBytes: 10485760  # 10MB
+      backupCount: 10
+      encoding: "utf-8"
+
+loggers:
+  src:
+    level: DEBUG
+    handlers:
+      - rich_console
+      - file
+    propagate: false
+
+  src.trading:
+    level: INFO
+    handlers:
+      - trading_file
+      - rich_console
+    propagate: false
+
+  src.core.config:
+    level: INFO
+    handlers:
+      - file
+      - rich_console
+    propagate: false
+
+  src.core.logging:
+    level: WARNING
+    handlers:
+      - file
+    propagate: false
+
+  src.mt5:
+    level: INFO
+    handlers:
+      - file
+      - rich_console
+    propagate: false
+
+  src.indicators:
+    level: DEBUG
+    handlers:
+      - file
+      - async_file
+    propagate: false
+
+  src.patterns:
+    level: DEBUG
+    handlers:
+      - file
+      - async_file
+    propagate: false
+
+  src.gui:
+    level: INFO
+    handlers:
+      - file
+      - rich_console
+    propagate: false
+
+  src.database:
+    level: INFO
+    handlers:
+      - file
+    propagate: false
+
+  # Third-party loggers
+  MetaTrader5:
+    level: INFO
+    handlers:
+      - file
+    propagate: false
+
+  sqlalchemy:
+    level: WARNING
+    handlers:
+      - file
+    propagate: false
+
+  sqlalchemy.engine:
+    level: INFO
+    handlers:
+      - file
+    propagate: false
+
+  urllib3:
+    level: WARNING
+    handlers:
+      - file
+    propagate: false
+
+  requests:
+    level: WARNING
+    handlers:
+      - file
+    propagate: false
+
+  asyncio:
+    level: WARNING
+    handlers:
+      - file
+    propagate: false
+
+  # Security-related loggers
+  security:
+    level: WARNING
+    handlers:
+      - security_file
+      - error_file
+    propagate: false
+
+  authentication:
+    level: INFO
+    handlers:
+      - security_file
+      - file
+    propagate: false
+
+root:
+  level: INFO
+  handlers:
+    - rich_console
+    - file
+
+# Environment-specific overrides can be defined here
+# These will be merged with the base configuration
+
+development:
+  handlers:
+    console:
+      level: DEBUG
+    rich_console:
+      level: DEBUG
+  loggers:
+    src:
+      level: DEBUG
+    root:
+      level: DEBUG
+
+testing:
+  handlers:
+    console:
+      level: WARNING
+    file:
+      filename: "logs/test.log"
+  loggers:
+    src:
+      level: WARNING
+    root:
+      level: WARNING
+
+production:
+  handlers:
+    console:
+      level: ERROR
+      formatter: json
+    file:
+      formatter: json
+      filename: "logs/production.log"
+    json_file:
+      level: INFO
+  loggers:
+    src:
+      level: INFO
+      handlers:
+        - console
+        - file
+        - json_file
+    root:
+      level: WARNING

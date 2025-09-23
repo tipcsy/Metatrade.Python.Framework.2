@@ -1,0 +1,50 @@
+# Development Environment Configuration
+# MetaTrader Python Framework
+
+environment: development
+debug: true
+
+# Database settings for development
+database:
+  url: "sqlite:///data/trading_dev.db"
+  echo: true  # Show SQL queries in development
+
+# Logging settings for development
+logging:
+  level: DEBUG
+  format: structured
+
+# API settings for development
+api:
+  enabled: true
+  host: "127.0.0.1"
+  port: 8000
+  secret_key: "dev-secret-key-change-in-production"
+
+# Security settings for development
+security:
+  encryption_key: "dev-encryption-key-change-in-production-32chars"
+  session_secret: "dev-session-secret-change-in-production-32chars"
+  rate_limit_enabled: false  # Disable rate limiting in development
+
+# Performance settings for development
+performance:
+  async_workers: 2
+  thread_pool_size: 4
+
+# Notification settings for development
+notifications:
+  enabled: false  # Disable notifications in development
+
+# GUI settings for development
+gui:
+  enabled: true
+  theme: dark
+  language: hu
+  update_interval: 500  # Faster updates for development
+
+# Market data settings for development
+market_data:
+  cache_enabled: true
+  cache_ttl: 60  # Shorter cache TTL for development
+  historical_data_days: 30  # Less historical data for development

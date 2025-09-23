@@ -1,0 +1,15 @@
+# Production dependencies
+-r base.txt
+
+# Production server
+gunicorn>=21.0.0
+uvicorn>=0.23.0
+
+# Monitoring
+prometheus-client>=0.17.0
+
+# GUI (optional for production)
+PyQt6>=6.5.0
+matplotlib>=3.7.0
+plotly>=5.15.0
+dash>=2.11.0
