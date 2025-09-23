@@ -12,7 +12,11 @@
       "Bash([[ \"$dir\" == */tests/* ]])",
       "Bash(fi)",
       "Bash(done)",
-      "Bash(tree:*)"
+      "Bash(tree:*)",
+      "Bash(chmod:*)",
+      "Bash(python -m pytest tests/unit/ -v --tb=short)",
+      "Bash(python3 -m pytest tests/unit/ -v --tb=short)",
+      "Bash(python3:*)"
     ],
     "deny": [],
     "ask": []
