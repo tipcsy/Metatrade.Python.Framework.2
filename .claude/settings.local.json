@@ -16,7 +16,8 @@
       "Bash(chmod:*)",
       "Bash(python -m pytest tests/unit/ -v --tb=short)",
       "Bash(python3 -m pytest tests/unit/ -v --tb=short)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(find:*)"
     ],
     "deny": [],
     "ask": []
