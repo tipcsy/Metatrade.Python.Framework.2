@@ -8,6 +8,7 @@ symbol groups, symbols, and trading sessions.
 from __future__ import annotations
 
 from decimal import Decimal
+from datetime import datetime, timezone
 from typing import Dict, List, Optional, Type, Union
 
 from sqlalchemy import and_, or_
@@ -500,6 +501,98 @@ class SymbolService(CachedService[Symbol, SymbolCreateSchema, SymbolUpdateSchema
                 summary['total_tradeable'] += tradeable or 0
 
             return summary
+
+    def create_or_update(self, session, symbol_info) -> Symbol:
+        """
+        Create or update symbol from SymbolInfo model.
+
+        Args:
+            session: Database session
+            symbol_info: SymbolInfo instance
+
+        Returns:
+            Symbol database model
+        """
+        # Check if symbol exists
+        existing = session.query(Symbol).filter(
+            and_(
+                Symbol.symbol == symbol_info.symbol.upper(),
+                Symbol.deleted_at.is_(None)
+            )
+        ).first()
+
+        if existing:
+            # Update existing symbol
+            existing.description = symbol_info.description
+            existing.is_tradeable = symbol_info.is_tradable
+            existing.is_visible = symbol_info.is_visible
+            existing.status = symbol_info.status.value
+            existing.symbol_type = symbol_info.symbol_type.value
+            existing.updated_at = symbol_info.updated_at
+
+            if symbol_info.bid is not None:
+                existing.bid = symbol_info.bid
+            if symbol_info.ask is not None:
+                existing.ask = symbol_info.ask
+            if symbol_info.last_price is not None:
+                existing.last_price = symbol_info.last_price
+
+            session.commit()
+            return existing
+        else:
+            # Create new symbol
+            new_symbol = Symbol(
+                symbol=symbol_info.symbol.upper(),
+                name=symbol_info.description,
+                description=symbol_info.description,
+                symbol_type=symbol_info.symbol_type.value,
+                market=getattr(symbol_info, 'exchange', 'UNKNOWN') or 'UNKNOWN',
+                base_currency=symbol_info.base_currency or 'USD',
+                quote_currency=symbol_info.quote_currency or 'USD',
+                is_tradeable=symbol_info.is_tradable,
+                is_visible=symbol_info.is_visible,
+                status=symbol_info.status.value,
+                bid=symbol_info.bid,
+                ask=symbol_info.ask,
+                last_price=symbol_info.last_price,
+                created_at=symbol_info.created_at,
+                updated_at=symbol_info.updated_at
+            )
+
+            session.add(new_symbol)
+            session.commit()
+            return new_symbol
+
+    def delete_by_symbol(self, session, symbol: str) -> bool:
+        """
+        Delete symbol by symbol name.
+
+        Args:
+            session: Database session
+            symbol: Symbol name
+
+        Returns:
+            True if deleted successfully
+        """
+        try:
+            existing = session.query(Symbol).filter(
+                and_(
+                    Symbol.symbol == symbol.upper(),
+                    Symbol.deleted_at.is_(None)
+                )
+            ).first()
+
+            if existing:
+                existing.deleted_at = datetime.now(timezone.utc)
+                session.commit()
+                return True
+
+            return False
+
+        except Exception as e:
+            logger.error(f"Error deleting symbol {symbol}: {e}")
+            session.rollback()
+            return False
 
 
 class SymbolSessionService(CachedService[SymbolSession, SymbolSessionCreateSchema, SymbolSessionCreateSchema, SymbolSessionResponseSchema]):
