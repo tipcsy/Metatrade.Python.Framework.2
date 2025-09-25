@@ -234,6 +234,38 @@ class DependencyError(BaseFrameworkError):
             self.add_context("current_version", current_version)
 
 
+class DatabaseError(BaseFrameworkError):
+    """Exception raised for database-related errors."""
+
+    error_code = "DATABASE_ERROR"
+    error_category = "database"
+    severity = "error"
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        database_name: Optional[str] = None,
+        operation: Optional[str] = None,
+        **kwargs: Any,
+    ) -> None:
+        """
+        Initialize database error.
+
+        Args:
+            message: Error message
+            database_name: Name of the database
+            operation: Database operation that failed
+            **kwargs: Additional arguments for base class
+        """
+        super().__init__(message, **kwargs)
+
+        if database_name:
+            self.add_context("database_name", database_name)
+        if operation:
+            self.add_context("operation", operation)
+
+
 class SecurityError(BaseFrameworkError):
     """Exception raised for security-related issues."""
 

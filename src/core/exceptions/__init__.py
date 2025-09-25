@@ -9,6 +9,7 @@ various types of errors that can occur in the trading framework.
 from .base import (
     BaseFrameworkError,
     ConfigurationError,
+    DatabaseError,
     DependencyError,
     FrameworkWarning,
     InitializationError,
@@ -123,6 +124,7 @@ __all__ = [
     # Base exceptions
     "BaseFrameworkError",
     "ConfigurationError",
+    "DatabaseError",
     "ValidationError",
     "InitializationError",
     "DependencyError",
