@@ -12,7 +12,7 @@ import signal
 from typing import Optional
 
 from PyQt6.QtWidgets import QApplication, QMessageBox
-from PyQt6.QtCore import QTimer, QThread, QObject, pyqtSignal
+from PyQt6.QtCore import QTimer, QThread, QObject, pyqtSignal, Qt
 from PyQt6.QtGui import QFont, QIcon, QPalette
 
 from src.core.config import get_settings
@@ -106,9 +106,8 @@ class MetaTraderApp(QApplication):
         font.setHintingPreference(QFont.HintingPreference.PreferDefaultHinting)
         self.setFont(font)
 
-        # High DPI support
-        self.setAttribute(self.ApplicationAttribute.AA_EnableHighDpiScaling)
-        self.setAttribute(self.ApplicationAttribute.AA_UseHighDpiPixmaps)
+        # High DPI support is automatic in PyQt6
+        # AA_EnableHighDpiScaling and AA_UseHighDpiPixmaps are deprecated and not needed
 
         # Application behavior
         self.setQuitOnLastWindowClosed(True)

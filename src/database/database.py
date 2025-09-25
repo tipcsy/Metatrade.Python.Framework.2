@@ -427,12 +427,12 @@ class DatabaseManager:
                 try:
                     loop = asyncio.get_event_loop()
                     if loop.is_running():
-                        asyncio.create_task(self._async_engine.aclose())
+                        asyncio.create_task(self._async_engine.dispose())
                     else:
-                        loop.run_until_complete(self._async_engine.aclose())
+                        loop.run_until_complete(self._async_engine.dispose())
                 except RuntimeError:
                     # No event loop running, create one
-                    asyncio.run(self._async_engine.aclose())
+                    asyncio.run(self._async_engine.dispose())
                 logger.info("Asynchronous database engine disposed")
 
             self._is_initialized = False

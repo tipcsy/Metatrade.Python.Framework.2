@@ -195,7 +195,8 @@ def initialize_backend_services() -> bool:
         from src.database.database import get_database_manager
         db_manager = get_database_manager()
 
-        if not db_manager.initialize():
+        # Database is already initialized by get_database_manager()
+        if not db_manager.is_initialized:
             logger.error("Failed to initialize database")
             return False
 
