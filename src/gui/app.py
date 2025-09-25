@@ -17,7 +17,7 @@ from PyQt6.QtGui import QFont, QIcon, QPalette
 
 from src.core.config import get_settings
 from src.core.logging import get_logger
-from src.core.exceptions import MetaTraderFrameworkError
+from src.core.exceptions import BaseFrameworkError
 
 from .main_window import MainWindow
 from .themes import ThemeManager
@@ -269,7 +269,7 @@ def create_application(argv: list[str] = None) -> MetaTraderApp:
 
     except Exception as e:
         logger.error(f"Failed to create application: {e}")
-        raise MetaTraderFrameworkError(f"Application creation failed: {e}")
+        raise BaseFrameworkError(f"Application creation failed: {e}")
 
 
 def run_application() -> int:

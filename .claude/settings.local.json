@@ -18,7 +18,8 @@
       "Bash(python3 -m pytest tests/unit/ -v --tb=short)",
       "Bash(python3:*)",
       "Bash(find:*)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(pip install:*)"
     ],
     "deny": [],
     "ask": []

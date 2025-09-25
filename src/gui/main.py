@@ -18,7 +18,7 @@ sys.path.insert(0, str(project_root))
 
 from src.core.config import get_settings
 from src.core.logging import setup_logging, get_logger
-from src.core.exceptions import MetaTraderFrameworkError
+from src.core.exceptions import BaseFrameworkError
 
 # Import GUI components
 from src.gui.app import create_application, run_application
@@ -297,7 +297,7 @@ def main() -> int:
         logger.info("Application interrupted by user (Ctrl+C)")
         exit_code = 0
 
-    except MetaTraderFrameworkError as e:
+    except BaseFrameworkError as e:
         logger.error(f"Framework error: {e}")
         exit_code = 1
 
