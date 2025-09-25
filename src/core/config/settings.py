@@ -167,10 +167,7 @@ class Mt5AccountSettings(BaseModel):
         description="Tick data buffer size"
     )
 
-    class Config:
-        """Pydantic model configuration."""
-        validate_assignment = True
-
+    # Pydantic v2 configuration moved to model_config
 
 class Mt5PerformanceSettings(BaseModel):
     """MT5 performance configuration."""
@@ -239,10 +236,7 @@ class Mt5PerformanceSettings(BaseModel):
         description="Memory limit in MB"
     )
 
-    class Config:
-        """Pydantic model configuration."""
-        validate_assignment = True
-
+    # Pydantic v2 configuration moved to model_config
 
 class Mt5SecuritySettings(BaseModel):
     """MT5 security configuration."""
@@ -295,10 +289,7 @@ class Mt5SecuritySettings(BaseModel):
         description="Audit log retention in days"
     )
 
-    class Config:
-        """Pydantic model configuration."""
-        validate_assignment = True
-
+    # Pydantic v2 configuration moved to model_config
 
 class Mt5MonitoringSettings(BaseModel):
     """MT5 monitoring and alerting configuration."""
@@ -344,10 +335,7 @@ class Mt5MonitoringSettings(BaseModel):
         description="Alert threshold configurations"
     )
 
-    class Config:
-        """Pydantic model configuration."""
-        validate_assignment = True
-
+    # Pydantic v2 configuration moved to model_config
 
 class Mt5Settings(BaseModel):
     """Enterprise MetaTrader 5 configuration settings."""
@@ -475,10 +463,7 @@ class Mt5Settings(BaseModel):
 
         return self
 
-    class Config:
-        """Pydantic model configuration."""
-        validate_assignment = True
-
+    # Pydantic v2 configuration moved to model_config
 
 class DatabaseSettings(BaseModel):
     """Database configuration settings."""
@@ -501,10 +486,7 @@ class DatabaseSettings(BaseModel):
         description="Maximum overflow connections"
     )
 
-    class Config:
-        """Pydantic model configuration."""
-        validate_assignment = True
-
+    # Pydantic v2 configuration moved to model_config
 
 class LoggingSettings(BaseModel):
     """Logging configuration settings."""
@@ -537,10 +519,7 @@ class LoggingSettings(BaseModel):
         path.parent.mkdir(parents=True, exist_ok=True)
         return path
 
-    class Config:
-        """Pydantic model configuration."""
-        validate_assignment = True
-
+    # Pydantic v2 configuration moved to model_config
 
 class TradingSettings(BaseModel):
     """Trading configuration settings."""
@@ -572,10 +551,7 @@ class TradingSettings(BaseModel):
         description="Maximum number of open positions"
     )
 
-    class Config:
-        """Pydantic model configuration."""
-        validate_assignment = True
-
+    # Pydantic v2 configuration moved to model_config
 
 class MarketDataSettings(BaseModel):
     """Market data configuration settings."""
@@ -601,10 +577,7 @@ class MarketDataSettings(BaseModel):
         description="Number of days of historical data to maintain"
     )
 
-    class Config:
-        """Pydantic model configuration."""
-        validate_assignment = True
-
+    # Pydantic v2 configuration moved to model_config
 
 class GuiSettings(BaseModel):
     """GUI configuration settings."""
@@ -622,10 +595,7 @@ class GuiSettings(BaseModel):
         description="GUI update interval in milliseconds"
     )
 
-    class Config:
-        """Pydantic model configuration."""
-        validate_assignment = True
-
+    # Pydantic v2 configuration moved to model_config
 
 class ApiSettings(BaseModel):
     """API configuration settings."""
@@ -644,10 +614,7 @@ class ApiSettings(BaseModel):
         description="API secret key"
     )
 
-    class Config:
-        """Pydantic model configuration."""
-        validate_assignment = True
-
+    # Pydantic v2 configuration moved to model_config
 
 class NotificationSettings(BaseModel):
     """Notification configuration settings."""
@@ -667,10 +634,7 @@ class NotificationSettings(BaseModel):
     telegram_bot_token: Optional[str] = Field(default=None, description="Telegram bot token")
     telegram_chat_id: Optional[str] = Field(default=None, description="Telegram chat ID")
 
-    class Config:
-        """Pydantic model configuration."""
-        validate_assignment = True
-
+    # Pydantic v2 configuration moved to model_config
 
 class PerformanceSettings(BaseModel):
     """Performance configuration settings."""
@@ -692,10 +656,7 @@ class PerformanceSettings(BaseModel):
         description="Memory limit"
     )
 
-    class Config:
-        """Pydantic model configuration."""
-        validate_assignment = True
-
+    # Pydantic v2 configuration moved to model_config
 
 class SecuritySettings(BaseModel):
     """Security configuration settings."""
@@ -727,10 +688,7 @@ class SecuritySettings(BaseModel):
         description="Rate limit window in seconds"
     )
 
-    class Config:
-        """Pydantic model configuration."""
-        validate_assignment = True
-
+    # Pydantic v2 configuration moved to model_config
 
 class BackupSettings(BaseModel):
     """Backup configuration settings."""
@@ -759,10 +717,7 @@ class BackupSettings(BaseModel):
         path.mkdir(parents=True, exist_ok=True)
         return path
 
-    class Config:
-        """Pydantic model configuration."""
-        validate_assignment = True
-
+    # Pydantic v2 configuration moved to model_config
 
 class Settings(BaseSettings):
     """Main application settings."""
@@ -805,6 +760,21 @@ class Settings(BaseSettings):
         default=Path("config/patterns.yaml"),
         description="Patterns configuration file path"
     )
+
+    debug: bool = Field(default=True, description="Debug mode")
+
+    # Component settings
+    mt5: Mt5Settings = Field(default_factory=Mt5Settings)
+    database: DatabaseSettings = Field(default_factory=DatabaseSettings)
+    logging: LoggingSettings = Field(default_factory=LoggingSettings)
+    trading: TradingSettings = Field(default_factory=TradingSettings)
+    market_data: MarketDataSettings = Field(default_factory=MarketDataSettings)
+    gui: GuiSettings = Field(default_factory=GuiSettings)
+    api: ApiSettings = Field(default_factory=ApiSettings)
+    notifications: NotificationSettings = Field(default_factory=NotificationSettings)
+    performance: PerformanceSettings = Field(default_factory=PerformanceSettings)
+    security: SecuritySettings = Field(default_factory=SecuritySettings)
+    backup: BackupSettings = Field(default_factory=BackupSettings)
 
     # Time zone
     time_zone: str = Field(
@@ -880,7 +850,3 @@ class Settings(BaseSettings):
         """Get the logs directory."""
         return self.logging.file_path.parent
 
-    class Config:
-        """Pydantic model configuration."""
-        validate_assignment = True
-        use_enum_values = True

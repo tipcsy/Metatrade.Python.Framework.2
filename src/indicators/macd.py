@@ -80,10 +80,7 @@ class MACDConfig(IndicatorConfig):
         description="Periods to look back for divergence detection"
     )
 
-    class Config:
-        """Pydantic configuration."""
-        validate_assignment = True
-
+    # Pydantic v2 configuration moved to model_config
 
 class MACDAnalysis(BaseModel):
     """Comprehensive MACD analysis result."""
@@ -141,10 +138,7 @@ class MACDAnalysis(BaseModel):
             "signal_confidence": self.signal_confidence
         }
 
-    class Config:
-        """Pydantic configuration."""
-        use_enum_values = True
-
+    # Pydantic v2 configuration moved to model_config
 
 class MACDIndicator(BaseIndicator):
     """

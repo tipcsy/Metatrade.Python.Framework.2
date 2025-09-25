@@ -70,12 +70,7 @@ class MarketSession(BaseModel):
             # Overnight session
             return current_time_only >= self.start_time or current_time_only <= self.end_time
 
-    class Config:
-        """Pydantic configuration."""
-        json_encoders = {
-            time: lambda t: t.isoformat()
-        }
-
+    # Pydantic v2 configuration moved to model_config
 
 class SymbolInfo(BaseModel):
     """Comprehensive symbol information."""
@@ -254,14 +249,7 @@ class SymbolInfo(BaseModel):
             "properties": self.properties
         }
 
-    class Config:
-        """Pydantic configuration."""
-        use_enum_values = True
-        json_encoders = {
-            datetime: lambda dt: dt.isoformat(),
-            time: lambda t: t.isoformat()
-        }
-
+    # Pydantic v2 configuration moved to model_config
 
 class SymbolGroup(BaseModel):
     """Symbol group for organizing symbols."""
@@ -337,12 +325,7 @@ class SymbolGroup(BaseModel):
             "updated_at": self.updated_at.isoformat()
         }
 
-    class Config:
-        """Pydantic configuration."""
-        json_encoders = {
-            datetime: lambda dt: dt.isoformat()
-        }
-
+    # Pydantic v2 configuration moved to model_config
 
 class SymbolStats(BaseModel):
     """Symbol statistics and metrics."""
@@ -395,8 +378,3 @@ class SymbolStats(BaseModel):
             "calculated_at": self.calculated_at.isoformat()
         }
 
-    class Config:
-        """Pydantic configuration."""
-        json_encoders = {
-            datetime: lambda dt: dt.isoformat()
-        }

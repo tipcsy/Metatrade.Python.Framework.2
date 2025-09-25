@@ -61,10 +61,7 @@ class IndicatorConfig(BaseModel):
         description="Additional indicator-specific parameters"
     )
 
-    class Config:
-        """Pydantic configuration."""
-        validate_assignment = True
-
+    # Pydantic v2 configuration moved to model_config
 
 class IndicatorResult(BaseModel):
     """Standard result structure for indicators."""
@@ -140,12 +137,7 @@ class IndicatorResult(BaseModel):
             "context": self.context
         }
 
-    class Config:
-        """Pydantic configuration."""
-        json_encoders = {
-            datetime: lambda dt: dt.isoformat()
-        }
-
+    # Pydantic v2 configuration moved to model_config
 
 class BaseIndicator(ABC):
     """

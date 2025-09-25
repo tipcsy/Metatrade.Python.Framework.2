@@ -116,10 +116,7 @@ class TrendConfig(IndicatorConfig):
         description="Give higher priority to longer timeframes"
     )
 
-    class Config:
-        """Pydantic configuration."""
-        validate_assignment = True
-
+    # Pydantic v2 configuration moved to model_config
 
 class TimeframeTrend(BaseModel):
     """Trend analysis for a single timeframe."""
@@ -162,13 +159,7 @@ class TimeframeTrend(BaseModel):
             "last_updated": self.last_updated.isoformat()
         }
 
-    class Config:
-        """Pydantic configuration."""
-        use_enum_values = True
-        json_encoders = {
-            datetime: lambda dt: dt.isoformat()
-        }
-
+    # Pydantic v2 configuration moved to model_config
 
 class TrendAnalysis(BaseModel):
     """Comprehensive multi-timeframe trend analysis."""
@@ -245,13 +236,7 @@ class TrendAnalysis(BaseModel):
             "conflict_details": self.conflict_details
         }
 
-    class Config:
-        """Pydantic configuration."""
-        use_enum_values = True
-        json_encoders = {
-            datetime: lambda dt: dt.isoformat()
-        }
-
+    # Pydantic v2 configuration moved to model_config
 
 class TrendAnalyzer(BaseIndicator):
     """

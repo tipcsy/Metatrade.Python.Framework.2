@@ -134,14 +134,7 @@ class TickData(BaseModel):
             "spread": float(self.spread)
         }
 
-    class Config:
-        """Pydantic configuration."""
-        use_enum_values = True
-        json_encoders = {
-            datetime: lambda dt: dt.isoformat(),
-            Decimal: lambda d: float(d)
-        }
-
+    # Pydantic v2 configuration moved to model_config
 
 class OHLCData(BaseModel):
     """
@@ -280,14 +273,7 @@ class OHLCData(BaseModel):
             "is_doji": self.is_doji
         }
 
-    class Config:
-        """Pydantic configuration."""
-        use_enum_values = True
-        json_encoders = {
-            datetime: lambda dt: dt.isoformat(),
-            Decimal: lambda d: float(d)
-        }
-
+    # Pydantic v2 configuration moved to model_config
 
 class MarketEvent(BaseModel):
     """
@@ -342,13 +328,7 @@ class MarketEvent(BaseModel):
             "severity": self.severity
         }
 
-    class Config:
-        """Pydantic configuration."""
-        use_enum_values = True
-        json_encoders = {
-            datetime: lambda dt: dt.isoformat()
-        }
-
+    # Pydantic v2 configuration moved to model_config
 
 class ProcessingState(BaseModel):
     """
@@ -403,12 +383,7 @@ class ProcessingState(BaseModel):
             "config": self.config
         }
 
-    class Config:
-        """Pydantic configuration."""
-        json_encoders = {
-            datetime: lambda dt: dt.isoformat()
-        }
-
+    # Pydantic v2 configuration moved to model_config
 
 class TrendAnalysis(BaseModel):
     """
@@ -477,9 +452,3 @@ class TrendAnalysis(BaseModel):
             "sell_signal": self.sell_signal
         }
 
-    class Config:
-        """Pydantic configuration."""
-        use_enum_values = True
-        json_encoders = {
-            datetime: lambda dt: dt.isoformat()
-        }

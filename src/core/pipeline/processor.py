@@ -93,13 +93,7 @@ class ProcessingResult(BaseModel):
             "context": self.context
         }
 
-    class Config:
-        """Pydantic configuration."""
-        use_enum_values = True
-        json_encoders = {
-            datetime: lambda dt: dt.isoformat()
-        }
-
+    # Pydantic v2 configuration moved to model_config
 
 class DataProcessor(ABC):
     """

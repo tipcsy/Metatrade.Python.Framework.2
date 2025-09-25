@@ -135,10 +135,7 @@ class TaskConfig(BaseModel):
         description="Log task errors"
     )
 
-    class Config:
-        """Pydantic configuration."""
-        use_enum_values = True
-
+    # Pydantic v2 configuration moved to model_config
 
 class TaskResult(BaseModel):
     """Task execution result."""
@@ -225,13 +222,7 @@ class TaskResult(BaseModel):
             "next_retry_at": self.next_retry_at.isoformat() if self.next_retry_at else None
         }
 
-    class Config:
-        """Pydantic configuration."""
-        use_enum_values = True
-        json_encoders = {
-            datetime: lambda dt: dt.isoformat()
-        }
-
+    # Pydantic v2 configuration moved to model_config
 
 class Task(BaseModel):
     """Task definition and execution context."""
@@ -427,15 +418,7 @@ class Task(BaseModel):
             "queue_name": self.queue_name
         }
 
-    class Config:
-        """Pydantic configuration."""
-        use_enum_values = True
-        arbitrary_types_allowed = True  # Allow Callable type
-        json_encoders = {
-            datetime: lambda dt: dt.isoformat(),
-            Callable: lambda f: getattr(f, "__name__", str(f))
-        }
-
+    # Pydantic v2 configuration moved to model_config
 
 class TaskStats(BaseModel):
     """Task execution statistics."""
@@ -571,8 +554,3 @@ class TaskStats(BaseModel):
             "last_task_at": self.last_task_at.isoformat() if self.last_task_at else None
         }
 
-    class Config:
-        """Pydantic configuration."""
-        json_encoders = {
-            datetime: lambda dt: dt.isoformat()
-        }
