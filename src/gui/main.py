@@ -34,15 +34,15 @@ def setup_environment() -> bool:
         bool: True if setup successful
     """
     try:
-        # Setup logging first
-        setup_logging()
+        # Load settings first
+        settings = get_settings()
+
+        # Setup logging with settings
+        setup_logging(settings)
         global logger
         logger = get_logger(__name__)
 
         logger.info("Setting up GUI application environment...")
-
-        # Load and validate settings
-        settings = get_settings()
 
         # Validate GUI settings
         if not settings.gui.enabled:
