@@ -330,6 +330,42 @@ class BusinessLogicError(BaseFrameworkError):
             self.add_context("violation_type", violation_type)
 
 
+class DuplicateError(BaseFrameworkError):
+    """Exception raised when attempting to create a duplicate resource."""
+
+    error_code = "DUPLICATE_ERROR"
+    error_category = "duplicate"
+    severity = "error"
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        resource_type: Optional[str] = None,
+        duplicate_field: Optional[str] = None,
+        duplicate_value: Optional[str] = None,
+        **kwargs: Any,
+    ) -> None:
+        """
+        Initialize duplicate error.
+
+        Args:
+            message: Error message
+            resource_type: Type of resource that has a duplicate
+            duplicate_field: Field that has duplicate value
+            duplicate_value: The duplicate value
+            **kwargs: Additional arguments for base class
+        """
+        super().__init__(message, **kwargs)
+
+        if resource_type:
+            self.add_context("resource_type", resource_type)
+        if duplicate_field:
+            self.add_context("duplicate_field", duplicate_field)
+        if duplicate_value:
+            self.add_context("duplicate_value", duplicate_value)
+
+
 class SecurityError(BaseFrameworkError):
     """Exception raised for security-related issues."""
 
