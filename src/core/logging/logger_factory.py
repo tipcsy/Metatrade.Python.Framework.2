@@ -292,6 +292,24 @@ class LoggerFactory:
         cls._console = None
 
 
+def _initialize_fallback_logging():
+    """Initialize logging with fallback settings when main settings unavailable."""
+    from ..config.settings import LogLevel, LogFormat
+
+    # Create minimal settings object for fallback
+    class FallbackSettings:
+        class FallbackLogging:
+            level = LogLevel.INFO
+            format = LogFormat.SIMPLE
+            file_enabled = False
+            console_enabled = True
+            rich_console = True
+
+        logging = FallbackLogging()
+
+    LoggerFactory.initialize(FallbackSettings())
+
+
 def get_logger(name: str) -> structlog.stdlib.BoundLogger:
     """
     Get a logger instance (convenience function).
@@ -302,6 +320,16 @@ def get_logger(name: str) -> structlog.stdlib.BoundLogger:
     Returns:
         Configured logger instance
     """
+    # Auto-initialize with default settings if not already initialized
+    if not LoggerFactory._initialized:
+        try:
+            from ..config import get_settings
+            settings = get_settings()
+            LoggerFactory.initialize(settings)
+        except Exception:
+            # Fallback to basic initialization if settings can't be loaded
+            _initialize_fallback_logging()
+
     return LoggerFactory.get_logger(name)
 
 
