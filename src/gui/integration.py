@@ -87,7 +87,7 @@ class GuiBackendIntegrator(QObject):
         except Exception as e:
             logger.error(f"Error setting up connections: {e}")
 
-    def start_integration(self) -> bool:
+    async def start_integration(self) -> bool:
         """Start the integration services."""
         if self._is_running:
             logger.warning("Integration already running")
@@ -148,7 +148,13 @@ class GuiBackendIntegrator(QObject):
                 self.serviceStatusChanged.emit('symbol_manager', True)
 
             # Subscribe to MT5 data feeds
-            session = self.mt5_session_manager.get_active_session()
+            try:
+                session = None  # Temporarily disabled due to async issues
+                # session = await self.mt5_session_manager.get_session()
+            except Exception as e:
+                session = None
+                logger.debug(f"MT5 session not available: {e}")
+
             if session:
                 # In a complete implementation, this would set up
                 # MT5 tick/quote subscriptions

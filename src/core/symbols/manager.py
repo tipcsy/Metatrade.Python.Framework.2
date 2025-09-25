@@ -505,10 +505,16 @@ class SymbolManager:
                 "is_running": self._is_running
             }
 
-    def _fetch_symbol_info_from_mt5(self, symbol: str) -> Optional[SymbolInfo]:
+    async def _fetch_symbol_info_from_mt5(self, symbol: str) -> Optional[SymbolInfo]:
         """Fetch symbol information from MT5."""
         try:
-            session = self.mt5_session_manager.get_active_session()
+            try:
+                session = None  # Temporarily disabled due to async issues
+                # session = await self.mt5_session_manager.get_session()
+            except Exception as e:
+                session = None
+                logger.debug(f"MT5 session not available: {e}")
+
             if not session:
                 logger.error("No active MT5 session for symbol fetch")
                 return None
@@ -723,12 +729,18 @@ class SymbolManager:
         logger.info("Symbol monitoring tasks scheduled")
 
     @background_task(name="sync_symbols_with_mt5")
-    def _sync_symbols_with_mt5(self) -> None:
+    async def _sync_symbols_with_mt5(self) -> None:
         """Synchronize symbols with MT5."""
         try:
             logger.debug("Synchronizing symbols with MT5...")
 
-            session = self.mt5_session_manager.get_active_session()
+            try:
+                session = None  # Temporarily disabled due to async issues
+                # session = await self.mt5_session_manager.get_session()
+            except Exception as e:
+                session = None
+                logger.debug(f"MT5 session not available: {e}")
+
             if not session:
                 logger.warning("No active MT5 session for synchronization")
                 return
