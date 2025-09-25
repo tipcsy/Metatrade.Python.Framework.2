@@ -87,7 +87,7 @@ class UserCreateSchema(CreateRequestSchema):
         json_schema_extra={"example": "en"}
     )
 
-    @validator('role')
+    @field_validator('role')
     def validate_role(cls, v):
         """Validate user role."""
         valid_roles = ['ADMIN', 'TRADER', 'USER', 'READONLY']
@@ -95,7 +95,7 @@ class UserCreateSchema(CreateRequestSchema):
             raise ValueError(f'Role must be one of: {", ".join(valid_roles)}')
         return v.upper()
 
-    @validator('password')
+    @field_validator('password')
     def validate_password_strength(cls, v):
         """Validate password strength."""
         if not any(c.isupper() for c in v):
@@ -157,7 +157,7 @@ class UserUpdateSchema(UpdateRequestSchema):
         json_schema_extra={"example": "en"}
     )
 
-    @validator('role')
+    @field_validator('role')
     def validate_role(cls, v):
         """Validate user role."""
         if v is None:
@@ -194,7 +194,7 @@ class UserPasswordChangeSchema(CreateRequestSchema):
         json_schema_extra={"example": "NewSecurePassword456!"}
     )
 
-    @validator('new_password')
+    @field_validator('new_password')
     def validate_password_strength(cls, v):
         """Validate password strength."""
         if not any(c.isupper() for c in v):
@@ -205,7 +205,7 @@ class UserPasswordChangeSchema(CreateRequestSchema):
             raise ValueError('Password must contain at least one digit')
         return v
 
-    @validator('confirm_password')
+    @field_validator('confirm_password')
     def validate_passwords_match(cls, v, values):
         """Validate that new password and confirm password match."""
         if 'new_password' in values and v != values['new_password']:
@@ -379,7 +379,7 @@ class AccountCreateSchema(CreateRequestSchema):
         json_schema_extra={"example": "1000.00"}
     )
 
-    @validator('account_type')
+    @field_validator('account_type')
     def validate_account_type(cls, v):
         """Validate account type."""
         valid_types = ['DEMO', 'LIVE', 'PRACTICE']
@@ -706,7 +706,7 @@ class TransactionCreateSchema(CreateRequestSchema):
         json_schema_extra={"example": "TXN987654321"}
     )
 
-    @validator('transaction_type')
+    @field_validator('transaction_type')
     def validate_transaction_type(cls, v):
         """Validate transaction type."""
         valid_types = [
@@ -843,7 +843,7 @@ class AccountSettingsCreateSchema(CreateRequestSchema):
         json_schema_extra={"example": "H1"}
     )
 
-    @validator('chart_theme')
+    @field_validator('chart_theme')
     def validate_chart_theme(cls, v):
         """Validate chart theme."""
         valid_themes = ['dark', 'light', 'blue', 'classic']
@@ -851,7 +851,7 @@ class AccountSettingsCreateSchema(CreateRequestSchema):
             raise ValueError(f'Chart theme must be one of: {", ".join(valid_themes)}')
         return v.lower()
 
-    @validator('default_timeframe')
+    @field_validator('default_timeframe')
     def validate_timeframe(cls, v):
         """Validate timeframe."""
         valid_timeframes = ['M1', 'M5', 'M15', 'M30', 'H1', 'H4', 'D1', 'W1', 'MN1']

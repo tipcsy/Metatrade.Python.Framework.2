@@ -11,7 +11,7 @@ from datetime import datetime
 from decimal import Decimal
 from typing import Any, Dict, List, Optional, Union
 
-from pydantic import BaseModel, Field, validator, root_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 from pydantic.config import ConfigDict
 
 
@@ -432,16 +432,13 @@ class DateRangeSchema(BaseSchema):
         json_schema_extra={"example": "2024-12-31T23:59:59Z"}
     )
 
-    @root_validator
-    def validate_date_range(cls, values):
+    @model_validator(mode='after')
+    def validate_date_range(self) -> 'DateRangeSchema':
         """Validate that start_date is before end_date."""
-        start_date = values.get('start_date')
-        end_date = values.get('end_date')
-
-        if start_date and end_date and start_date >= end_date:
+        if self.start_date and self.end_date and self.start_date >= self.end_date:
             raise ValueError('start_date must be before end_date')
 
-        return values
+        return self
 
 
 # Health check schemas

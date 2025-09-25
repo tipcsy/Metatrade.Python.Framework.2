@@ -60,7 +60,7 @@ class SymbolGroupCreateSchema(CreateRequestSchema, ConfigurationSchema):
         json_schema_extra={"example": 17}
     )
 
-    @validator('group_type')
+    @field_validator('group_type')
     def validate_group_type(cls, v):
         """Validate group type."""
         valid_types = ['FOREX', 'CRYPTO', 'STOCK', 'COMMODITY', 'INDEX', 'BOND', 'ETF']
@@ -317,7 +317,7 @@ class SymbolCreateSchema(CreateRequestSchema):
         json_schema_extra={"example": True}
     )
 
-    @validator('trade_mode')
+    @field_validator('trade_mode')
     def validate_trade_mode(cls, v):
         """Validate trade mode."""
         valid_modes = ['FULL', 'LONG_ONLY', 'SHORT_ONLY', 'CLOSE_ONLY', 'DISABLED']
@@ -325,7 +325,7 @@ class SymbolCreateSchema(CreateRequestSchema):
             raise ValueError(f'Trade mode must be one of: {", ".join(valid_modes)}')
         return v.upper()
 
-    @validator('max_lot')
+    @field_validator('max_lot')
     def validate_max_lot_greater_than_min(cls, v, values):
         """Validate that max_lot is greater than min_lot."""
         min_lot = values.get('min_lot')
@@ -410,7 +410,7 @@ class SymbolUpdateSchema(UpdateRequestSchema):
         json_schema_extra={"example": True}
     )
 
-    @validator('trade_mode')
+    @field_validator('trade_mode')
     def validate_trade_mode(cls, v):
         """Validate trade mode."""
         if v is None:
@@ -448,7 +448,7 @@ class SymbolQuoteUpdateSchema(CreateRequestSchema):
         json_schema_extra={"example": "1000.50000000"}
     )
 
-    @validator('ask')
+    @field_validator('ask')
     def validate_ask_greater_than_bid(cls, v, values):
         """Validate that ask price is greater than or equal to bid price."""
         bid = values.get('bid')
@@ -685,7 +685,7 @@ class SymbolSessionCreateSchema(CreateRequestSchema):
         json_schema_extra={"example": "FULL"}
     )
 
-    @validator('session_name')
+    @field_validator('session_name')
     def validate_session_name(cls, v):
         """Validate session name."""
         valid_sessions = ['SYDNEY', 'TOKYO', 'LONDON', 'NEW_YORK', 'FRANKFURT', 'HONG_KONG']
@@ -693,7 +693,7 @@ class SymbolSessionCreateSchema(CreateRequestSchema):
             raise ValueError(f'Session name must be one of: {", ".join(valid_sessions)}')
         return v.upper()
 
-    @validator('trade_mode')
+    @field_validator('trade_mode')
     def validate_trade_mode(cls, v):
         """Validate trade mode."""
         valid_modes = ['FULL', 'LONG_ONLY', 'SHORT_ONLY', 'CLOSE_ONLY', 'DISABLED']

@@ -17,7 +17,8 @@
       "Bash(python -m pytest tests/unit/ -v --tb=short)",
       "Bash(python3 -m pytest tests/unit/ -v --tb=short)",
       "Bash(python3:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(python:*)"
     ],
     "deny": [],
     "ask": []

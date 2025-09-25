@@ -109,7 +109,7 @@ class IndicatorResult(BaseModel):
         description="Additional context information"
     )
 
-    @validator("timestamp", "bar_timestamp")
+    @field_validator("timestamp", "bar_timestamp")
     def validate_timestamps(cls, v: datetime) -> datetime:
         """Ensure timestamps are timezone-aware."""
         if v.tzinfo is None:

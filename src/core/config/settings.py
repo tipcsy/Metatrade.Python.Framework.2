@@ -15,8 +15,8 @@ from typing import Any, Dict, List, Optional, Union
 from pydantic import (
     BaseModel,
     Field,
-    validator,
-    root_validator,
+    field_validator,
+    model_validator,
 )
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -435,7 +435,8 @@ class Mt5Settings(BaseModel):
         description="Number of event processing threads"
     )
 
-    @validator("path", pre=True)
+    @field_validator("path", mode='before')
+    @classmethod
     def validate_path(cls, v: Union[str, Path, None]) -> Optional[Path]:
         """Validate MT5 path."""
         if v is None:
@@ -445,7 +446,8 @@ class Mt5Settings(BaseModel):
             raise ValueError(f"MT5 path does not exist: {path}")
         return path
 
-    @validator("accounts")
+    @field_validator("accounts")
+    @classmethod
     def validate_accounts(cls, v: List[Mt5AccountSettings]) -> List[Mt5AccountSettings]:
         """Validate account configurations."""
         if not v:
@@ -463,18 +465,15 @@ class Mt5Settings(BaseModel):
 
         return v
 
-    @root_validator
-    def validate_default_account(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+    @model_validator(mode='after')
+    def validate_default_account(self) -> 'Mt5Settings':
         """Validate default account exists."""
-        default_account = values.get("default_account")
-        accounts = values.get("accounts", [])
+        if self.default_account and self.accounts:
+            account_names = [account.name for account in self.accounts]
+            if self.default_account not in account_names:
+                raise ValueError(f"Default account '{self.default_account}' not found in accounts")
 
-        if default_account and accounts:
-            account_names = [account.name for account in accounts]
-            if default_account not in account_names:
-                raise ValueError(f"Default account '{default_account}' not found in accounts")
-
-        return values
+        return self
 
     class Config:
         """Pydantic model configuration."""
@@ -530,7 +529,8 @@ class LoggingSettings(BaseModel):
         description="Log format type"
     )
 
-    @validator("file_path", pre=True)
+    @field_validator("file_path", mode='before')
+    @classmethod
     def validate_file_path(cls, v: Union[str, Path]) -> Path:
         """Validate and create log directory."""
         path = Path(v)
@@ -751,7 +751,8 @@ class BackupSettings(BaseModel):
         description="Backup directory path"
     )
 
-    @validator("path", pre=True)
+    @field_validator("path", mode='before')
+    @classmethod
     def validate_backup_path(cls, v: Union[str, Path]) -> Path:
         """Validate and create backup directory."""
         path = Path(v)
@@ -820,32 +821,27 @@ class Settings(BaseSettings):
         extra="forbid",
     )
 
-    @root_validator
-    def validate_production_settings(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+    @model_validator(mode='after')
+    def validate_production_settings(self) -> 'Settings':
         """Validate production-specific settings."""
-        environment = values.get("environment")
-
-        if environment == Environment.PRODUCTION:
+        if self.environment == Environment.PRODUCTION:
             # Ensure debug is disabled in production
-            values["debug"] = False
+            object.__setattr__(self, 'debug', False)
 
             # Validate security settings
-            security = values.get("security", {})
-            if isinstance(security, SecuritySettings):
-                if security.encryption_key == "change-me-in-production":
-                    raise ValueError("Encryption key must be changed in production")
-                if security.session_secret == "change-me-in-production":
-                    raise ValueError("Session secret must be changed in production")
+            if self.security.encryption_key == "change-me-in-production":
+                raise ValueError("Encryption key must be changed in production")
+            if self.security.session_secret == "change-me-in-production":
+                raise ValueError("Session secret must be changed in production")
 
             # Validate API settings
-            api = values.get("api", {})
-            if isinstance(api, ApiSettings) and api.enabled:
-                if api.secret_key == "change-me-in-production":
-                    raise ValueError("API secret key must be changed in production")
+            if self.api.enabled and self.api.secret_key == "change-me-in-production":
+                raise ValueError("API secret key must be changed in production")
 
-        return values
+        return self
 
-    @validator("strategy_config_path", "indicators_config_path", "patterns_config_path", pre=True)
+    @field_validator("strategy_config_path", "indicators_config_path", "patterns_config_path", mode='before')
+    @classmethod
     def validate_config_paths(cls, v: Union[str, Path]) -> Path:
         """Validate configuration file paths."""
         path = Path(v)

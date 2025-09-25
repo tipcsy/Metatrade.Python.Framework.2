@@ -88,14 +88,14 @@ class TickData(BaseModel):
         description="Data quality assessment"
     )
 
-    @validator("bid", "ask", pre=True)
+    @field_validator("bid", "ask", pre=True)
     def validate_prices(cls, v: Union[float, Decimal, str]) -> Decimal:
         """Convert and validate prices to Decimal."""
         if isinstance(v, (float, str)):
             return Decimal(str(v))
         return v
 
-    @validator("timestamp", "received_at")
+    @field_validator("timestamp", "received_at")
     def validate_timestamps(cls, v: datetime) -> datetime:
         """Ensure timestamps are timezone-aware."""
         if v.tzinfo is None:
@@ -181,14 +181,14 @@ class OHLCData(BaseModel):
         description="Detected data gaps"
     )
 
-    @validator("open", "high", "low", "close", pre=True)
+    @field_validator("open", "high", "low", "close", pre=True)
     def validate_prices(cls, v: Union[float, Decimal, str]) -> Decimal:
         """Convert and validate prices to Decimal."""
         if isinstance(v, (float, str)):
             return Decimal(str(v))
         return v
 
-    @validator("timestamp", "created_at")
+    @field_validator("timestamp", "created_at")
     def validate_timestamps(cls, v: datetime) -> datetime:
         """Ensure timestamps are timezone-aware."""
         if v.tzinfo is None:
@@ -322,7 +322,7 @@ class MarketEvent(BaseModel):
         description="Event severity (info, warning, error, critical)"
     )
 
-    @validator("timestamp")
+    @field_validator("timestamp")
     def validate_timestamp(cls, v: datetime) -> datetime:
         """Ensure timestamp is timezone-aware."""
         if v.tzinfo is None:
@@ -381,7 +381,7 @@ class ProcessingState(BaseModel):
         description="Component configuration"
     )
 
-    @validator("timestamp")
+    @field_validator("timestamp")
     def validate_timestamp(cls, v: datetime) -> datetime:
         """Ensure timestamp is timezone-aware."""
         if v.tzinfo is None:
@@ -453,7 +453,7 @@ class TrendAnalysis(BaseModel):
     buy_signal: bool = Field(default=False, description="Buy signal detected")
     sell_signal: bool = Field(default=False, description="Sell signal detected")
 
-    @validator("timestamp")
+    @field_validator("timestamp")
     def validate_timestamp(cls, v: datetime) -> datetime:
         """Ensure timestamp is timezone-aware."""
         if v.tzinfo is None:

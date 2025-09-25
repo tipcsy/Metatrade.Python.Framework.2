@@ -154,7 +154,7 @@ class SymbolInfo(BaseModel):
         description="Custom symbol properties"
     )
 
-    @validator("created_at", "updated_at", "last_quote_time")
+    @field_validator("created_at", "updated_at", "last_quote_time")
     def validate_timestamps(cls, v: Optional[datetime]) -> Optional[datetime]:
         """Ensure timestamps are timezone-aware."""
         if v is None:
@@ -290,7 +290,7 @@ class SymbolGroup(BaseModel):
         description="Last update time"
     )
 
-    @validator("created_at", "updated_at")
+    @field_validator("created_at", "updated_at")
     def validate_timestamps(cls, v: datetime) -> datetime:
         """Ensure timestamps are timezone-aware."""
         if v.tzinfo is None:
@@ -372,7 +372,7 @@ class SymbolStats(BaseModel):
         description="When stats were calculated"
     )
 
-    @validator("calculated_at")
+    @field_validator("calculated_at")
     def validate_timestamp(cls, v: datetime) -> datetime:
         """Ensure timestamp is timezone-aware."""
         if v.tzinfo is None:
