@@ -14,10 +14,22 @@ import time
 from contextlib import asynccontextmanager
 from typing import Any, Dict, List, Optional, Type, TypeVar, Union
 
-import redis
-import redis.asyncio as aioredis
-from redis.connection import ConnectionPool
-from redis.exceptions import ConnectionError, RedisError, TimeoutError
+# Optional Redis imports
+try:
+    import redis
+    import redis.asyncio as aioredis
+    from redis.connection import ConnectionPool
+    from redis.exceptions import ConnectionError, RedisError, TimeoutError
+    REDIS_AVAILABLE = True
+except ImportError:
+    # Create dummy classes when redis is not available
+    redis = None
+    aioredis = None
+    ConnectionPool = None
+    ConnectionError = Exception
+    RedisError = Exception
+    TimeoutError = Exception
+    REDIS_AVAILABLE = False
 
 from src.core.config import get_settings
 from src.core.exceptions import CacheError, ConnectionError as CoreConnectionError
@@ -65,6 +77,12 @@ class RedisClient:
             health_check_interval: Health check interval in seconds
             **kwargs: Additional Redis connection parameters
         """
+        if not REDIS_AVAILABLE:
+            logger.warning("Redis is not available, cache operations will be disabled")
+            self._redis_available = False
+            return
+
+        self._redis_available = True
         self.host = host
         self.port = port
         self.db = db

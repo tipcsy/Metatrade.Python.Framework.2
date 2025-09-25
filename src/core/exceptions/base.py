@@ -366,6 +366,38 @@ class DuplicateError(BaseFrameworkError):
             self.add_context("duplicate_value", duplicate_value)
 
 
+class CacheError(BaseFrameworkError):
+    """Exception raised for cache-related errors."""
+
+    error_code = "CACHE_ERROR"
+    error_category = "cache"
+    severity = "error"
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        cache_key: Optional[str] = None,
+        cache_operation: Optional[str] = None,
+        **kwargs: Any,
+    ) -> None:
+        """
+        Initialize cache error.
+
+        Args:
+            message: Error message
+            cache_key: Cache key that caused the error
+            cache_operation: Cache operation that failed
+            **kwargs: Additional arguments for base class
+        """
+        super().__init__(message, **kwargs)
+
+        if cache_key:
+            self.add_context("cache_key", cache_key)
+        if cache_operation:
+            self.add_context("cache_operation", cache_operation)
+
+
 class SecurityError(BaseFrameworkError):
     """Exception raised for security-related issues."""
 

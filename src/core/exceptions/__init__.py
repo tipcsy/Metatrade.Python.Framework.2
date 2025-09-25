@@ -9,6 +9,7 @@ various types of errors that can occur in the trading framework.
 from .base import (
     BaseFrameworkError,
     BusinessLogicError,
+    CacheError,
     ConfigurationError,
     DatabaseError,
     DependencyError,
@@ -127,6 +128,7 @@ __all__ = [
     # Base exceptions
     "BaseFrameworkError",
     "BusinessLogicError",
+    "CacheError",
     "ConfigurationError",
     "DatabaseError",
     "DuplicateError",
