@@ -16,6 +16,9 @@ from pydantic import ValidationError
 
 from .settings import Settings, Environment
 
+# Global settings instance
+_settings: Optional['Settings'] = None
+
 
 class ConfigurationError(Exception):
     """Raised when configuration loading or validation fails."""
@@ -537,3 +540,21 @@ def load_settings(
         raise ConfigurationError(f"Configuration validation error: {e}") from e
     except Exception as e:
         raise ConfigurationError(f"Error loading configuration: {e}") from e
+
+
+def get_settings(reload: bool = False) -> Settings:
+    """
+    Get the application settings instance.
+
+    Args:
+        reload: Whether to reload the settings from configuration
+
+    Returns:
+        Settings instance
+    """
+    global _settings
+
+    if _settings is None or reload:
+        _settings = load_settings()
+
+    return _settings

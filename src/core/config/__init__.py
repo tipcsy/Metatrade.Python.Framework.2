@@ -5,13 +5,17 @@ This module provides configuration management using Pydantic Settings
 with environment-specific YAML file support and validation.
 """
 
-from .config_loader import ConfigLoader, ConfigurationError, load_settings
+from .config_loader import ConfigLoader, ConfigurationError, load_settings, get_settings
 from .settings import (
     ApiSettings,
     BackupSettings,
     DatabaseSettings,
     Environment,
     GuiSettings,
+    GuiTheme,
+    Language,
+    LogFormat,
+    LogLevel,
     LoggingSettings,
     MarketDataSettings,
     Mt5Settings,
@@ -38,10 +42,16 @@ __all__ = [
     "PerformanceSettings",
     "SecuritySettings",
     "BackupSettings",
+    # Enums
+    "GuiTheme",
+    "Language",
+    "LogFormat",
+    "LogLevel",
     # Configuration loading
     "ConfigLoader",
     "ConfigurationError",
     "load_settings",
+    "get_settings",
     # Validation
     "ConfigValidator",
     "ValidationError",
