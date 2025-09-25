@@ -440,6 +440,7 @@ class DataQuality(BaseModel):
     # Symbol and timeframe
     symbol_id: Mapped[Optional[str]] = mapped_column(
         String(36),
+        ForeignKey("symbols.id"),
         nullable=True,
         index=True,
         doc="Reference to symbol (null for global metrics)"

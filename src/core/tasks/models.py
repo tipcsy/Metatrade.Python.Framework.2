@@ -175,7 +175,8 @@ class TaskResult(BaseModel):
         description="Next retry timestamp"
     )
 
-    @field_validator("started_at", "completed_at", "next_retry_at")
+    @field_validator("started_at", "completed_at", "next_retry_at", mode="before")
+    @classmethod
     def validate_timestamps(cls, v: Optional[datetime]) -> Optional[datetime]:
         """Ensure timestamps are timezone-aware."""
         if v is None:
@@ -306,7 +307,8 @@ class Task(BaseModel):
         description="Task queue name"
     )
 
-    @field_validator("created_at", "scheduled_at")
+    @field_validator("created_at", "scheduled_at", mode="before")
+    @classmethod
     def validate_timestamps(cls, v: Optional[datetime]) -> Optional[datetime]:
         """Ensure timestamps are timezone-aware."""
         if v is None:
@@ -449,7 +451,8 @@ class TaskStats(BaseModel):
     first_task_at: Optional[datetime] = Field(default=None, description="First task timestamp")
     last_task_at: Optional[datetime] = Field(default=None, description="Last task timestamp")
 
-    @field_validator("first_task_at", "last_task_at")
+    @field_validator("first_task_at", "last_task_at", mode="before")
+    @classmethod
     def validate_timestamps(cls, v: Optional[datetime]) -> Optional[datetime]:
         """Ensure timestamps are timezone-aware."""
         if v is None:

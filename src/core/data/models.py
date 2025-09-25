@@ -95,7 +95,8 @@ class TickData(BaseModel):
             return Decimal(str(v))
         return v
 
-    @field_validator("timestamp", "received_at")
+    @field_validator("timestamp", "received_at", mode="before")
+    @classmethod
     def validate_timestamps(cls, v: datetime) -> datetime:
         """Ensure timestamps are timezone-aware."""
         if v.tzinfo is None:
@@ -181,7 +182,8 @@ class OHLCData(BaseModel):
             return Decimal(str(v))
         return v
 
-    @field_validator("timestamp", "created_at")
+    @field_validator("timestamp", "created_at", mode="before")
+    @classmethod
     def validate_timestamps(cls, v: datetime) -> datetime:
         """Ensure timestamps are timezone-aware."""
         if v.tzinfo is None:
@@ -308,7 +310,8 @@ class MarketEvent(BaseModel):
         description="Event severity (info, warning, error, critical)"
     )
 
-    @field_validator("timestamp")
+    @field_validator("timestamp", mode="before")
+    @classmethod
     def validate_timestamp(cls, v: datetime) -> datetime:
         """Ensure timestamp is timezone-aware."""
         if v.tzinfo is None:
@@ -361,7 +364,8 @@ class ProcessingState(BaseModel):
         description="Component configuration"
     )
 
-    @field_validator("timestamp")
+    @field_validator("timestamp", mode="before")
+    @classmethod
     def validate_timestamp(cls, v: datetime) -> datetime:
         """Ensure timestamp is timezone-aware."""
         if v.tzinfo is None:
@@ -428,7 +432,8 @@ class TrendAnalysis(BaseModel):
     buy_signal: bool = Field(default=False, description="Buy signal detected")
     sell_signal: bool = Field(default=False, description="Sell signal detected")
 
-    @field_validator("timestamp")
+    @field_validator("timestamp", mode="before")
+    @classmethod
     def validate_timestamp(cls, v: datetime) -> datetime:
         """Ensure timestamp is timezone-aware."""
         if v.tzinfo is None:

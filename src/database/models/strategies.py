@@ -15,6 +15,7 @@ from sqlalchemy import (
     DECIMAL,
     Boolean,
     DateTime,
+    ForeignKey,
     Index,
     Integer,
     String,
@@ -227,6 +228,7 @@ class StrategySession(BaseModel):
     # Strategy relationship
     strategy_id: Mapped[str] = mapped_column(
         String(36),
+        ForeignKey("strategies.id"),
         nullable=False,
         index=True,
         doc="Reference to strategy"
@@ -379,6 +381,7 @@ class BacktestResult(BaseModel, PerformanceMixin):
     # Strategy relationship
     strategy_id: Mapped[str] = mapped_column(
         String(36),
+        ForeignKey("strategies.id"),
         nullable=False,
         index=True,
         doc="Reference to strategy"
@@ -566,6 +569,7 @@ class StrategyParameter(BaseModel):
     # Strategy relationship
     strategy_id: Mapped[str] = mapped_column(
         String(36),
+        ForeignKey("strategies.id"),
         nullable=False,
         index=True,
         doc="Reference to strategy"

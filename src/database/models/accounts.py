@@ -14,6 +14,7 @@ from sqlalchemy import (
     DECIMAL,
     Boolean,
     DateTime,
+    ForeignKey,
     Index,
     Integer,
     String,
@@ -174,6 +175,7 @@ class Account(BaseModel, PerformanceMixin):
     # User relationship
     user_id: Mapped[str] = mapped_column(
         String(36),
+        ForeignKey("users.id"),
         nullable=False,
         index=True,
         doc="Reference to user who owns this account"
@@ -500,6 +502,7 @@ class Transaction(BaseModel):
     # Account relationship
     account_id: Mapped[str] = mapped_column(
         String(36),
+        ForeignKey("accounts.id"),
         nullable=False,
         index=True,
         doc="Reference to account"
@@ -582,6 +585,7 @@ class AccountSettings(BaseModel):
     # Account relationship
     account_id: Mapped[str] = mapped_column(
         String(36),
+        ForeignKey("accounts.id"),
         nullable=False,
         unique=True,
         index=True,

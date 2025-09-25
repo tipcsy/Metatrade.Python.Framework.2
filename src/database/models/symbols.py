@@ -452,6 +452,7 @@ class SymbolSession(BaseModel):
     # Symbol reference
     symbol_id: Mapped[str] = mapped_column(
         String(36),
+        ForeignKey("symbols.id"),
         nullable=False,
         index=True,
         doc="Reference to symbol"

@@ -55,6 +55,15 @@ class Order(BaseModel, TradingMixin):
         doc="Reference to symbol"
     )
 
+    # Position relationship
+    position_id: Mapped[Optional[str]] = mapped_column(
+        String(36),
+        ForeignKey("positions.id"),
+        nullable=True,
+        index=True,
+        doc="Reference to position (if order is part of a position)"
+    )
+
     # Order identification
     order_ticket: Mapped[Optional[str]] = mapped_column(
         String(50),
@@ -298,6 +307,7 @@ class OrderFill(BaseModel):
     # Order relationship
     order_id: Mapped[str] = mapped_column(
         String(36),
+        ForeignKey("orders.id"),
         nullable=False,
         index=True,
         doc="Reference to order"
@@ -571,6 +581,7 @@ class Trade(BaseModel, TradingMixin):
     # Position relationship
     position_id: Mapped[Optional[str]] = mapped_column(
         String(36),
+        ForeignKey("positions.id"),
         nullable=True,
         index=True,
         doc="Reference to position (if applicable)"
@@ -647,6 +658,7 @@ class Trade(BaseModel, TradingMixin):
     # Strategy information
     strategy_id: Mapped[Optional[str]] = mapped_column(
         String(36),
+        ForeignKey("strategies.id"),
         nullable=True,
         index=True,
         doc="Reference to strategy that generated this trade"
