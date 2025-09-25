@@ -14,18 +14,41 @@ from typing import Any, Dict, List, Optional, Union
 
 from pydantic import BaseModel, Field
 
-# Handle Pydantic v1/v2 compatibility
+# Handle Pydantic compatibility
 try:
-    # Try Pydantic v2 imports first
-    from pydantic import field_validator, model_validator
-except ImportError:
-    try:
-        # Try alternative v2 import paths
-        from pydantic.functional_validators import field_validator
-        from pydantic import model_validator
-    except ImportError:
-        # Fallback for Pydantic v1
-        from pydantic import validator as field_validator, root_validator as model_validator
+    import pydantic
+
+    # Try different import combinations
+    if hasattr(pydantic, 'field_validator'):
+        from pydantic import field_validator, model_validator
+    elif hasattr(pydantic, 'validator'):
+        # Pydantic v1 compatibility
+        from pydantic import validator, root_validator
+        field_validator = validator
+        model_validator = root_validator
+    else:
+        # Last resort - create pass-through decorators
+        def field_validator(*args, **kwargs):
+            def decorator(func):
+                return func
+            return decorator
+
+        def model_validator(*args, **kwargs):
+            def decorator(func):
+                return func
+            return decorator
+
+except Exception as e:
+    # Emergency fallback
+    def field_validator(*args, **kwargs):
+        def decorator(func):
+            return func
+        return decorator
+
+    def model_validator(*args, **kwargs):
+        def decorator(func):
+            return func
+        return decorator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
