@@ -12,12 +12,20 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
-from pydantic import (
-    BaseModel,
-    Field,
-    field_validator,
-    model_validator,
-)
+from pydantic import BaseModel, Field
+
+# Handle Pydantic v1/v2 compatibility
+try:
+    # Try Pydantic v2 imports first
+    from pydantic import field_validator, model_validator
+except ImportError:
+    try:
+        # Try alternative v2 import paths
+        from pydantic.functional_validators import field_validator
+        from pydantic import model_validator
+    except ImportError:
+        # Fallback for Pydantic v1
+        from pydantic import validator as field_validator, root_validator as model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
