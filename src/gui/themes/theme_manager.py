@@ -20,7 +20,14 @@ from src.core.logging import get_logger
 
 from .themes import BaseTheme, DarkTheme, LightTheme, ThemeType
 
-logger = get_logger(__name__)
+logger = None  # Will be initialized after LoggerFactory setup
+
+
+def _ensure_logger():
+    """Ensure logger is initialized."""
+    global logger
+    if logger is None:
+        logger = get_logger(__name__)
 
 
 class ThemeManager(QObject):
@@ -74,6 +81,7 @@ class ThemeManager(QObject):
         # Set initial theme
         self.set_theme(initial_theme)
 
+        _ensure_logger()
         logger.info(f"Theme manager initialized with theme: {initial_theme}")
 
     def _register_builtin_themes(self) -> None:

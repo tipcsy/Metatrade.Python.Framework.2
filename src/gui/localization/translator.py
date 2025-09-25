@@ -15,7 +15,14 @@ from PyQt6.QtCore import QTranslator, QCoreApplication
 
 from src.core.logging import get_logger
 
-logger = get_logger(__name__)
+logger = None  # Will be initialized after LoggerFactory setup
+
+
+def _ensure_logger():
+    """Ensure logger is initialized."""
+    global logger
+    if logger is None:
+        logger = get_logger(__name__)
 
 
 class Translator(QTranslator):
@@ -54,6 +61,7 @@ class Translator(QTranslator):
                 fallback_file = Path("localization/en.json")
                 self._fallback_translations = self._load_translation_file(fallback_file)
 
+            _ensure_logger()
             logger.info(f"Loaded {len(self._translations)} translations for '{self.language_code}'")
 
         except Exception as e:

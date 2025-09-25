@@ -18,7 +18,14 @@ from src.core.logging import get_logger
 
 from .translator import Translator, HUNGARIAN_TRANSLATIONS, ENGLISH_TRANSLATIONS
 
-logger = get_logger(__name__)
+logger = None  # Will be initialized after LoggerFactory setup
+
+
+def _ensure_logger():
+    """Ensure logger is initialized."""
+    global logger
+    if logger is None:
+        logger = get_logger(__name__)
 
 
 class LocalizationManager(QObject):
@@ -79,6 +86,7 @@ class LocalizationManager(QObject):
         # Set initial language
         self.set_language(initial_language)
 
+        _ensure_logger()
         logger.info(f"Localization manager initialized with language: {initial_language}")
 
     def _load_preferences(self) -> None:

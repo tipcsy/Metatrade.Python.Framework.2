@@ -16,7 +16,14 @@ from PyQt6.QtGui import QColor, QPalette
 
 from src.core.logging import get_logger
 
-logger = get_logger(__name__)
+logger = None  # Will be initialized after LoggerFactory setup
+
+
+def _ensure_logger():
+    """Ensure logger is initialized."""
+    global logger
+    if logger is None:
+        logger = get_logger(__name__)
 
 
 class ThemeType(Enum):
