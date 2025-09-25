@@ -94,8 +94,6 @@ class DatabaseManager:
         """Get engine configuration based on database type and settings."""
         config = {
             'echo': settings.database.echo,
-            'pool_size': settings.database.pool_size,
-            'max_overflow': settings.database.max_overflow,
             'pool_pre_ping': True,  # Validate connections before use
             'pool_recycle': 3600,   # Recycle connections after 1 hour
         }
@@ -113,6 +111,8 @@ class DatabaseManager:
         elif 'postgresql' in self._database_url:
             config.update({
                 'poolclass': pool.QueuePool,
+                'pool_size': settings.database.pool_size,
+                'max_overflow': settings.database.max_overflow,
                 'pool_timeout': 30,
                 'connect_args': {
                     'application_name': 'MetaTrader_Framework',
@@ -205,8 +205,9 @@ class DatabaseManager:
     def _test_connection(self) -> None:
         """Test database connection."""
         try:
-            with self.get_session() as session:
-                result = session.execute(text("SELECT 1"))
+            # Test connection directly using engine
+            with self._engine.connect() as conn:
+                result = conn.execute(text("SELECT 1"))
                 result.fetchone()
             logger.info("Database connection test successful")
         except Exception as e:
@@ -439,6 +440,10 @@ class DatabaseManager:
 
         except Exception as e:
             logger.error(f"Error closing database manager: {e}")
+
+    def shutdown(self) -> None:
+        """Shutdown database manager (alias for close)."""
+        self.close()
 
     def __enter__(self):
         """Context manager entry."""
