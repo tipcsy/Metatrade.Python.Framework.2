@@ -15,6 +15,7 @@ from sqlalchemy import (
     DECIMAL,
     Boolean,
     DateTime,
+    ForeignKey,
     Index,
     Integer,
     String,
@@ -40,6 +41,7 @@ class MarketData(BaseModel, TimeSeriesMixin, OHLCVMixin):
     # Symbol relationship
     symbol_id: Mapped[str] = mapped_column(
         String(36),
+        ForeignKey("symbols.id"),
         nullable=False,
         index=True,
         doc="Reference to symbol"
@@ -188,6 +190,7 @@ class TickData(BaseModel, TimeSeriesMixin, FinancialMixin):
     # Symbol relationship
     symbol_id: Mapped[str] = mapped_column(
         String(36),
+        ForeignKey("symbols.id"),
         nullable=False,
         index=True,
         doc="Reference to symbol"
@@ -298,6 +301,7 @@ class MarketDepth(BaseModel, TimeSeriesMixin):
     # Symbol relationship
     symbol_id: Mapped[str] = mapped_column(
         String(36),
+        ForeignKey("symbols.id"),
         nullable=False,
         index=True,
         doc="Reference to symbol"

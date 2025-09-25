@@ -15,6 +15,7 @@ from sqlalchemy import (
     DECIMAL,
     Boolean,
     DateTime,
+    ForeignKey,
     Index,
     Integer,
     String,
@@ -40,6 +41,7 @@ class Order(BaseModel, TradingMixin):
     # Account and symbol relationships
     account_id: Mapped[str] = mapped_column(
         String(36),
+        ForeignKey("accounts.id"),
         nullable=False,
         index=True,
         doc="Reference to trading account"
@@ -47,6 +49,7 @@ class Order(BaseModel, TradingMixin):
 
     symbol_id: Mapped[str] = mapped_column(
         String(36),
+        ForeignKey("symbols.id"),
         nullable=False,
         index=True,
         doc="Reference to symbol"
@@ -364,6 +367,7 @@ class Position(BaseModel, TradingMixin):
     # Account and symbol relationships
     account_id: Mapped[str] = mapped_column(
         String(36),
+        ForeignKey("accounts.id"),
         nullable=False,
         index=True,
         doc="Reference to trading account"
@@ -371,6 +375,7 @@ class Position(BaseModel, TradingMixin):
 
     symbol_id: Mapped[str] = mapped_column(
         String(36),
+        ForeignKey("symbols.id"),
         nullable=False,
         index=True,
         doc="Reference to symbol"
@@ -574,6 +579,7 @@ class Trade(BaseModel, TradingMixin):
     # Account and symbol relationships
     account_id: Mapped[str] = mapped_column(
         String(36),
+        ForeignKey("accounts.id"),
         nullable=False,
         index=True,
         doc="Reference to trading account"
@@ -581,6 +587,7 @@ class Trade(BaseModel, TradingMixin):
 
     symbol_id: Mapped[str] = mapped_column(
         String(36),
+        ForeignKey("symbols.id"),
         nullable=False,
         index=True,
         doc="Reference to symbol"

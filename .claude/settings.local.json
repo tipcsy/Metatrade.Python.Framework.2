@@ -19,7 +19,8 @@
       "Bash(python3:*)",
       "Bash(find:*)",
       "Bash(python:*)",
-      "Bash(pip install:*)"
+      "Bash(pip install:*)",
+      "Bash(timeout:*)"
     ],
     "deny": [],
     "ask": []

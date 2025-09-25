@@ -13,6 +13,7 @@ from typing import Optional
 from sqlalchemy import (
     DECIMAL,
     Boolean,
+    ForeignKey,
     Index,
     Integer,
     String,
@@ -108,6 +109,7 @@ class Symbol(BaseModel):
     # Symbol group relationship
     symbol_group_id: Mapped[Optional[str]] = mapped_column(
         String(36),
+        ForeignKey("symbol_groups.id"),
         nullable=True,
         index=True,
         doc="Reference to symbol group"
