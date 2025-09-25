@@ -13,7 +13,7 @@ from enum import Enum, IntEnum
 from typing import Any, Callable, Dict, List, Optional, Union
 from uuid import uuid4
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 
 
 class TaskStatus(str, Enum):
@@ -315,7 +315,7 @@ class Task(BaseModel):
             return v.replace(tzinfo=timezone.utc)
         return v
 
-    @field_validator("function", pre=True, always=True)
+    @field_validator("function", mode='before')
     def validate_function(cls, v, values):
         """Validate and set function name."""
         if v is not None:

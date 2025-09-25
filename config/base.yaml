@@ -1,0 +1,41 @@
+app_name: MetaTrader Python Framework
+app_version: 2.0.0
+time_zone: Europe/Budapest
+mt5:
+  enabled: true
+  timeout: 60000
+database:
+  echo: false
+  pool_size: 5
+  max_overflow: 10
+logging:
+  level: INFO
+  file_path: logs/application.log
+  max_size: 10MB
+  backup_count: 5
+  format: structured
+trading:
+  enabled: false
+  risk_management_enabled: true
+  max_risk_per_trade: 0.02
+  max_daily_risk: 0.1
+  max_open_positions: 5
+market_data:
+  provider: mt5
+  cache_enabled: true
+  cache_ttl: 300
+  historical_data_days: 365
+gui:
+  enabled: true
+  theme: dark
+  language: hu
+  update_interval: 1000
+performance:
+  async_workers: 4
+  thread_pool_size: 8
+  memory_limit: 1GB
+backup:
+  enabled: true
+  interval: daily
+  retention_days: 30
+  path: data/backups/

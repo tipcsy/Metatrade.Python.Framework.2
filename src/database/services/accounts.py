@@ -19,8 +19,7 @@ from src.core.exceptions import (
     ValidationError,
     NotFoundError,
     BusinessLogicError,
-    AuthenticationError,
-    AuthorizationError,
+    SecurityError,
 )
 from src.core.logging import get_logger
 from src.database.models.accounts import User, Account, Transaction, AccountSettings
@@ -259,14 +258,14 @@ class UserService(CachedService[User, UserCreateSchema, UserUpdateSchema, UserRe
 
         Raises:
             NotFoundError: If user not found
-            AuthenticationError: If current password is invalid
+            SecurityError: If current password is invalid
         """
         user = self.get_by_id(user_id)
         if not user:
             raise NotFoundError(f"User with ID {user_id} not found")
 
         if not self._verify_password(current_password, user.password_hash):
-            raise AuthenticationError("Current password is invalid")
+            raise SecurityError("Current password is invalid")
 
         try:
             new_password_hash = self._hash_password(new_password)

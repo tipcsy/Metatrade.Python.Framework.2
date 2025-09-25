@@ -16,7 +16,7 @@ from datetime import datetime, timezone
 from typing import Any, Callable, Dict, List, Optional, Union
 
 from src.core.config import get_settings
-from src.core.exceptions import BufferError, PerformanceError
+from src.core.exceptions import BaseFrameworkError, Mt5PerformanceError
 from src.core.logging import get_logger
 from .models import TickData, OHLCData, MarketEvent, ProcessingState
 

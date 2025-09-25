@@ -11,7 +11,7 @@ from datetime import datetime
 from decimal import Decimal
 from typing import List, Optional
 
-from pydantic import Field, validator, EmailStr
+from pydantic import Field, field_validator, EmailStr
 
 from .base import (
     BaseEntitySchema,

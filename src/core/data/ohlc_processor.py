@@ -15,12 +15,12 @@ from typing import Any, Dict, List, Optional, Set, Callable
 import threading
 import uuid
 
-from core.config.settings import Settings, Mt5TimeFrame
-from core.exceptions import DataValidationError, PerformanceError
-from core.logging import get_logger
+from src.core.config.settings import Settings, Mt5TimeFrame
+from src.core.exceptions import DataValidationError, Mt5PerformanceError
+from src.core.logging import get_logger
 from .models import TickData, OHLCData, MarketEvent, MarketEventType
 from .buffer import BufferManager
-from .events import EventPublisher
+from .events import DataEventPublisher
 
 logger = get_logger(__name__)
 
@@ -117,7 +117,7 @@ class OHLCProcessor:
         self,
         settings: Settings,
         buffer_manager: BufferManager,
-        event_publisher: EventPublisher,
+        event_publisher: DataEventPublisher,
     ):
         self.settings = settings
         self.buffer_manager = buffer_manager

@@ -19,9 +19,9 @@ from datetime import datetime, timezone
 
 from src.core.config.settings import Settings
 from src.core.exceptions import (
-    StreamingError,
-    BufferOverflowError,
-    PerformanceError,
+    BaseFrameworkError,
+    Mt5PerformanceError,
+    Mt5Mt5StreamingError,
 )
 from src.core.logging import get_logger
 from src.core.data.models import TickData, OHLCData, MarketEvent, MarketEventType
@@ -247,7 +247,7 @@ class RealTimeDataStreamer:
                 exc_info=True
             )
             await self._cleanup_workers()
-            raise StreamingError(f"Failed to start streaming: {e}") from e
+            raise Mt5StreamingError(f"Failed to start streaming: {e}") from e
 
     async def stop_streaming(self) -> None:
         """Stop real-time data streaming."""
@@ -749,7 +749,7 @@ class RealTimeDataStreamer:
 
         except Exception as e:
             logger.error(f"Error buffering tick data: {e}")
-            raise BufferOverflowError(f"Failed to buffer tick data: {e}") from e
+            raise BaseFrameworkError(f"Failed to buffer tick data: {e}") from e
 
     async def _buffer_ohlc_data(self, ohlc: OHLCData) -> None:
         """Add OHLC data to buffer."""
@@ -770,7 +770,7 @@ class RealTimeDataStreamer:
 
         except Exception as e:
             logger.error(f"Error buffering OHLC data: {e}")
-            raise BufferOverflowError(f"Failed to buffer OHLC data: {e}") from e
+            raise BaseFrameworkError(f"Failed to buffer OHLC data: {e}") from e
 
     async def _data_processing_worker(self) -> None:
         """Worker for processing buffered data."""

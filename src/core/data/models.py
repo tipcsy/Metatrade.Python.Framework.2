@@ -13,7 +13,7 @@ from decimal import Decimal
 from enum import Enum
 from typing import Any, Dict, List, Optional, Union
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 
 
 class MarketEventType(str, Enum):
@@ -88,7 +88,7 @@ class TickData(BaseModel):
         description="Data quality assessment"
     )
 
-    @field_validator("bid", "ask", pre=True)
+    @field_validator("bid", "ask", mode='before')
     def validate_prices(cls, v: Union[float, Decimal, str]) -> Decimal:
         """Convert and validate prices to Decimal."""
         if isinstance(v, (float, str)):
@@ -174,7 +174,7 @@ class OHLCData(BaseModel):
         description="Detected data gaps"
     )
 
-    @field_validator("open", "high", "low", "close", pre=True)
+    @field_validator("open", "high", "low", "close", mode='before')
     def validate_prices(cls, v: Union[float, Decimal, str]) -> Decimal:
         """Convert and validate prices to Decimal."""
         if isinstance(v, (float, str)):

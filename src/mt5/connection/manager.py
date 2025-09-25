@@ -8,6 +8,7 @@ including multi-account support, connection pooling, and advanced monitoring.
 from __future__ import annotations
 
 import asyncio
+import threading
 import time
 from typing import Any, Dict, List, Optional, Set
 from concurrent.futures import ThreadPoolExecutor
@@ -17,7 +18,7 @@ from src.core.config.settings import Mt5Settings, Mt5AccountSettings
 from src.core.exceptions import (
     Mt5ConnectionError,
     Mt5SessionError,
-    Mt5ConfigurationError,
+    ConfigurationError,
 )
 from src.core.logging import get_logger
 from .session import Mt5Session
@@ -469,19 +470,19 @@ class Mt5ConnectionManager:
     async def _validate_configuration(self) -> None:
         """Validate MT5 configuration."""
         if not self.settings.accounts:
-            raise Mt5ConfigurationError("No MT5 accounts configured")
+            raise ConfigurationError("No MT5 accounts configured")
 
         # Validate account configurations
         account_names = set()
         for account in self.settings.accounts:
             if account.name in account_names:
-                raise Mt5ConfigurationError(f"Duplicate account name: {account.name}")
+                raise ConfigurationError(f"Duplicate account name: {account.name}")
             account_names.add(account.name)
 
         # Validate default account
         if self.settings.default_account:
             if self.settings.default_account not in account_names:
-                raise Mt5ConfigurationError(
+                raise ConfigurationError(
                     f"Default account '{self.settings.default_account}' not found in configuration"
                 )
 
@@ -674,3 +675,27 @@ class Mt5ConnectionManager:
     async def __aexit__(self, exc_type, exc_val, exc_tb) -> None:
         """Async context manager exit."""
         await self.shutdown()
+
+
+# Global instance management
+_mt5_session_manager_instance: Optional[Mt5ConnectionManager] = None
+_mt5_session_manager_lock = threading.Lock()
+
+
+def get_mt5_session_manager() -> Mt5ConnectionManager:
+    """
+    Get or create the global MT5 session manager instance.
+
+    Returns:
+        Mt5ConnectionManager: Global session manager instance
+    """
+    global _mt5_session_manager_instance
+
+    if _mt5_session_manager_instance is None:
+        with _mt5_session_manager_lock:
+            if _mt5_session_manager_instance is None:
+                from src.core.config import get_settings
+                settings = get_settings()
+                _mt5_session_manager_instance = Mt5ConnectionManager(settings.mt5)
+
+    return _mt5_session_manager_instance

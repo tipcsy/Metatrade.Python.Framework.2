@@ -17,7 +17,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Set
 
 from src.core.config import get_settings
-from src.core.exceptions import TaskQueueError
+from src.core.exceptions import BaseFrameworkError
 from src.core.logging import get_logger
 from .models import Task, TaskPriority, TaskStatus
 

@@ -15,7 +15,7 @@ from datetime import datetime, timezone
 from typing import Any, Callable, Dict, List, Optional, Set
 
 from src.core.config import get_settings
-from src.core.exceptions import Mt5ConnectionError, Mt5DataTimeoutError, PerformanceError
+from src.core.exceptions import Mt5ConnectionError, Mt5DataTimeoutError, Mt5PerformanceError
 from src.core.logging import get_logger
 from src.mt5.connection import get_mt5_session_manager
 from .models import TickData, MarketEvent, MarketEventType, ProcessingState
@@ -333,8 +333,13 @@ class TickCollector(DataCollector):
                         self._last_tick_time[symbol] = time.time()
                         ticks_collected += 1
 
-                        # Publish tick event
-                        await self._publish_tick_event(tick)
+                        # Publish tick event (non-blocking)
+                        try:
+                            loop = asyncio.get_event_loop()
+                            loop.create_task(self._publish_tick_event(tick))
+                        except RuntimeError:
+                            # No event loop available, skip event publishing
+                            pass
 
                 except Exception as e:
                     logger.debug(f"Error collecting tick for {symbol}: {e}")

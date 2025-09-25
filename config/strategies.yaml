@@ -1,0 +1,20 @@
+strategies:
+  rsi_strategy:
+    enabled: true
+    parameters:
+      period: 14
+      overbought: 70
+      oversold: 30
+    symbols:
+    - EURUSD
+    - GBPUSD
+    timeframe: H1
+  macd_strategy:
+    enabled: false
+    parameters:
+      fast_period: 12
+      slow_period: 26
+      signal_period: 9
+    symbols:
+    - EURUSD
+    timeframe: H1

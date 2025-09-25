@@ -20,7 +20,7 @@ from datetime import datetime, timezone
 from typing import Any, Callable, Dict, List, Optional, Set
 
 from src.core.config import get_settings
-from src.core.exceptions import TaskExecutionError, ResourceError
+from src.core.exceptions import BaseFrameworkError
 from src.core.logging import get_logger
 from .models import Task, TaskStatus, TaskResult, TaskStats
 from .queue import get_task_queue_manager, PriorityTaskQueue
@@ -229,7 +229,7 @@ class TaskWorker:
 
             # Execute task function
             if task.function is None:
-                raise TaskExecutionError(f"Task {task.task_id} has no function to execute")
+                raise BaseFrameworkError(f"Task {task.task_id} has no function to execute")
 
             # Set up timeout
             timeout = task.config.timeout_seconds

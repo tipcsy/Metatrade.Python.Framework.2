@@ -10,7 +10,7 @@ from __future__ import annotations
 from decimal import Decimal
 from typing import List, Optional
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
 from .base import (
     BaseEntitySchema,
