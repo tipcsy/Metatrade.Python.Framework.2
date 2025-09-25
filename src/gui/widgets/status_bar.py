@@ -236,16 +236,10 @@ class StatusBarWidget(QWidget):
         except Exception as e:
             logger.debug(f"Error updating status: {e}")
 
-    async def _check_connection_status(self) -> None:
+    def _check_connection_status(self) -> None:
         """Check MT5 connection status."""
         try:
-            try:
-                session = None  # Temporarily disabled due to async issues
-                # session = await self.mt5_session_manager.get_session()
-            except Exception as e:
-                session = None
-                logger.debug(f"MT5 session not available: {e}")
-
+            session = self.mt5_session_manager.get_session_sync()
             connected = session is not None and session.terminal_info() is not None
 
             if connected != self._connection_status:

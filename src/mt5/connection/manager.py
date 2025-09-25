@@ -221,6 +221,35 @@ class Mt5ConnectionManager:
             )
             raise Mt5SessionError(f"Failed to get session for account '{account_name}': {e}") from e
 
+    def get_session_sync(self, account_name: Optional[str] = None) -> Optional['Mt5Session']:
+        """Get an active MT5 session synchronously (wrapper for GUI components).
+
+        Args:
+            account_name: Account name, uses default if None
+
+        Returns:
+            Active MT5 session or None if not available
+        """
+        try:
+            # Check if we're in an async context
+            import asyncio
+            try:
+                loop = asyncio.get_event_loop()
+                if loop.is_running():
+                    # We're in an async context, can't run sync
+                    logger.warning("Cannot get session synchronously while event loop is running")
+                    return None
+                else:
+                    # No running loop, create one
+                    return loop.run_until_complete(self.get_session(account_name))
+            except RuntimeError:
+                # No event loop, create new one
+                return asyncio.run(self.get_session(account_name))
+
+        except Exception as e:
+            logger.debug(f"Failed to get MT5 session synchronously: {e}")
+            return None
+
     async def return_session(self, session: Mt5Session, account_name: Optional[str] = None) -> None:
         """Return a session to the pool.
 

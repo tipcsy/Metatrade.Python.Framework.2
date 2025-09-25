@@ -508,7 +508,7 @@ Timestamps:
 - Updated: {symbol_info.updated_at}
         """.strip()
 
-    async def _refresh_mt5_symbols(self) -> None:
+    def _refresh_mt5_symbols(self) -> None:
         """Refresh available symbols from MT5."""
         if self._is_loading:
             return
@@ -517,13 +517,7 @@ Timestamps:
             self._set_loading(True, "Refreshing MT5 symbols...")
 
             # Get MT5 session
-            try:
-                session = None  # Temporarily disabled due to async issues
-                # session = await self.mt5_session_manager.get_session()
-            except Exception as e:
-                session = None
-                logger.debug(f"MT5 session not available: {e}")
-
+            session = self.mt5_session_manager.get_session_sync()
             if not session:
                 self._show_error_message("No active MT5 connection")
                 return
@@ -606,7 +600,7 @@ Timestamps:
         """Handle symbol order change."""
         self.symbolOrderChanged.emit()
 
-    async def _update_status(self) -> None:
+    def _update_status(self) -> None:
         """Update status information."""
         try:
             # Update symbol counts
@@ -617,13 +611,7 @@ Timestamps:
             self.active_symbols_label.setText(f"Active: {active_symbols}")
 
             # Update MT5 connection status
-            try:
-                session = None  # Temporarily disabled due to async issues
-                # session = await self.mt5_session_manager.get_session()
-            except Exception as e:
-                session = None
-                logger.debug(f"MT5 session not available: {e}")
-
+            session = self.mt5_session_manager.get_session_sync()
             if session and session.terminal_info():
                 self.mt5_connection_label.setText("MT5: Connected")
                 self.mt5_connection_label.setStyleSheet("color: green;")
