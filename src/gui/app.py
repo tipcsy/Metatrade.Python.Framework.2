@@ -132,12 +132,14 @@ class MetaTraderApp(QApplication):
         try:
             print("Starting GUI components initialization...")
 
-            # Temporarily disable complex components to isolate the issue
+            # Temporarily disable complex components to avoid logger issues
             # Initialize theme manager
             print("Initializing ThemeManager...")
             try:
-                self.theme_manager = ThemeManager(self.settings.gui.theme)
-                print("✅ ThemeManager initialized successfully")
+                # TEMPORARILY DISABLED: ThemeManager has logger issues
+                # self.theme_manager = ThemeManager(self.settings.gui.theme)
+                self.theme_manager = None  # Temporary fix
+                print("⚠️ ThemeManager temporarily disabled (logger issue)")
             except Exception as e:
                 print(f"❌ ThemeManager failed: {e}")
                 self.theme_manager = None
@@ -145,8 +147,10 @@ class MetaTraderApp(QApplication):
             # Initialize localization manager
             print("Initializing LocalizationManager...")
             try:
-                self.localization_manager = LocalizationManager(self.settings.gui.language)
-                print("✅ LocalizationManager initialized successfully")
+                # TEMPORARILY DISABLED: LocalizationManager has logger issues
+                # self.localization_manager = LocalizationManager(self.settings.gui.language)
+                self.localization_manager = None  # Temporary fix
+                print("⚠️ LocalizationManager temporarily disabled (logger issue)")
             except Exception as e:
                 print(f"❌ LocalizationManager failed: {e}")
                 self.localization_manager = None

@@ -8,9 +8,7 @@ and performance optimization for high-frequency market data display.
 from __future__ import annotations
 
 from .data_updater import RealTimeDataUpdater
-from .update_manager import UpdateManager
 
 __all__ = [
     "RealTimeDataUpdater",
-    "UpdateManager",
 ]

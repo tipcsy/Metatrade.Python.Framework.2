@@ -50,8 +50,6 @@ class MarketDataModel(BaseTableModel):
 
     def __init__(self, parent=None):
         """Initialize market data model."""
-        super().__init__(parent)
-
         # Configuration
         self.settings = get_settings()
 
@@ -59,14 +57,17 @@ class MarketDataModel(BaseTableModel):
         self.symbol_manager = get_symbol_manager()
         self.data_collector = get_data_collection_manager()
 
-        # Model configuration
-        self._headers = self.get_column_headers()
-        self._column_types = self.get_column_types()
-
-        # Trend analysis configuration
+        # Trend analysis configuration (must be set before headers)
         self.trend_timeframes = [
             'M1', 'M5', 'M15', 'H1', 'H4', 'D1'
         ]
+
+        # Initialize parent class
+        super().__init__(parent)
+
+        # Model configuration
+        self._headers = self.get_column_headers()
+        self._column_types = self.get_column_types()
         self._trend_data: Dict[str, Dict[str, TrendDirection]] = {}
 
         # Color coding thresholds

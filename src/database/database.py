@@ -75,6 +75,14 @@ class DatabaseManager:
         }
 
         logger.info(f"Database manager initialized with URL: {self._mask_password(self._database_url)}")
+        # Debug: Show actual file path for SQLite
+        if self._database_url.startswith("sqlite:///"):
+            import os
+            db_path = self._database_url.replace("sqlite:///", "")
+            full_path = os.path.abspath(db_path)
+            logger.info(f"SQLite database full path: {full_path}")
+            logger.info(f"Database file exists: {os.path.exists(full_path)}")
+            logger.info(f"Current working directory: {os.getcwd()}")
 
     def _mask_password(self, url: str) -> str:
         """Mask password in database URL for logging."""

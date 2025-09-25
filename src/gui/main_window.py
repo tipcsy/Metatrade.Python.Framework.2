@@ -76,20 +76,42 @@ class MainWindow(QMainWindow):
         self.is_closing = False
 
         # Initialize UI components
-        self._init_window_properties()
-        self._create_widgets()
-        self._create_menus()
-        self._create_toolbars()
-        self._create_status_bar()
-        self._setup_layout()
-        self._setup_connections()
-        self._restore_window_state()
+        try:
+            print("Initializing window properties...")
+            self._init_window_properties()
+            print("Creating widgets...")
+            self._create_widgets()
+            print("Creating menus...")
+            self._create_menus()
+            print("Creating toolbars...")
+            self._create_toolbars()
+            print("Creating status bar...")
+            self._create_status_bar()
+            print("Setting up layout...")
+            self._setup_layout()
+            print("Setting up connections...")
+            self._setup_connections()
+            print("Restoring window state...")
+            self._restore_window_state()
 
-        # Start update timers
-        self._setup_timers()
+            # Start update timers
+            print("Setting up timers...")
+            self._setup_timers()
 
-        _ensure_logger()
-        logger.info("Main window initialized")
+            _ensure_logger()
+            if logger is not None:
+                logger.info("Main window initialized")
+            print("✅ Main window initialization completed")
+
+        except Exception as e:
+            print(f"❌ Main window initialization failed: {e}")
+            import traceback
+            traceback.print_exc()
+
+            _ensure_logger()
+            if logger is not None:
+                logger.error(f"Main window initialization failed: {e}")
+            raise
 
     def _init_window_properties(self) -> None:
         """Initialize window properties and settings."""
@@ -115,7 +137,9 @@ class MainWindow(QMainWindow):
             Qt.WindowType.WindowCloseButtonHint
         )
 
-        logger.debug("Window properties initialized")
+        _ensure_logger()
+        if logger is not None:
+            logger.debug("Window properties initialized")
 
     def _create_widgets(self) -> None:
         """Create all child widgets."""
@@ -150,10 +174,14 @@ class MainWindow(QMainWindow):
                 localization_manager=self.localization_manager
             )
 
-            logger.debug("Child widgets created")
+            _ensure_logger()
+            if logger is not None:
+                logger.debug("Child widgets created")
 
         except Exception as e:
-            logger.error(f"Failed to create widgets: {e}")
+            _ensure_logger()
+            if logger is not None:
+                logger.error(f"Failed to create widgets: {e}")
             raise
 
     def _create_menus(self) -> None:
