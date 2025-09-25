@@ -294,19 +294,34 @@ class LoggerFactory:
 
 def _initialize_fallback_logging():
     """Initialize logging with fallback settings when main settings unavailable."""
-    from ..config.settings import LogLevel, LogFormat
+    from ..config.settings import LogLevel, LogFormat, Environment
     from pathlib import Path
 
-    # Create minimal settings object for fallback
-    class FallbackSettings:
-        class FallbackLogging:
-            level = LogLevel.INFO
-            format = LogFormat.SIMPLE
-            file_path = Path("logs/fallback.log")
-            max_size = "10MB"
-            backup_count = 3
+    # Create comprehensive fallback settings object
+    class FallbackLogging:
+        level = LogLevel.INFO
+        format = LogFormat.SIMPLE
+        file_path = Path("logs/fallback.log")
+        max_size = "10MB"
+        backup_count = 3
 
+    class FallbackSettings:
+        # Core attributes that might be accessed
+        environment = Environment.DEVELOPMENT
+        debug = True
+
+        # Logging settings
         logging = FallbackLogging()
+
+        # Methods that might be called
+        def is_development(self) -> bool:
+            return self.environment == Environment.DEVELOPMENT
+
+        def is_testing(self) -> bool:
+            return self.environment == Environment.TESTING
+
+        def is_production(self) -> bool:
+            return self.environment == Environment.PRODUCTION
 
     LoggerFactory.initialize(FallbackSettings())
 
