@@ -7,7 +7,7 @@ functionality like sorting, filtering, and performance optimization.
 
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
+from abc import ABCMeta, abstractmethod
 from typing import Any, Optional, List, Dict
 from decimal import Decimal
 
@@ -22,7 +22,12 @@ from src.core.logging import get_logger
 logger = get_logger(__name__)
 
 
-class BaseTableModel(QAbstractTableModel, ABC):
+class QtAbstractMeta(type(QAbstractTableModel), ABCMeta):
+    """Metaclass that combines Qt's metaclass with ABCMeta."""
+    pass
+
+
+class BaseTableModel(QAbstractTableModel, metaclass=QtAbstractMeta):
     """
     Base class for table models with common functionality.
 
