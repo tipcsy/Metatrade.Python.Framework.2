@@ -77,7 +77,16 @@ class MetaTraderApp(QApplication):
         self._setup_application()
 
         # Initialize GUI components
-        self._initialize_components()
+        try:
+            print("About to call _initialize_components...")
+            self._initialize_components()
+            print("_initialize_components completed successfully")
+        except Exception as e:
+            print(f"ERROR in _initialize_components: {e}")
+            print(f"Exception type: {type(e)}")
+            import traceback
+            traceback.print_exc()
+            raise
 
         # Setup signal handlers
         self._setup_signal_handlers()
@@ -121,27 +130,60 @@ class MetaTraderApp(QApplication):
     def _initialize_components(self) -> None:
         """Initialize GUI component managers."""
         try:
+            print("Starting GUI components initialization...")
+
+            # Temporarily disable complex components to isolate the issue
             # Initialize theme manager
-            self.theme_manager = ThemeManager(self.settings.gui.theme)
+            print("Initializing ThemeManager...")
+            try:
+                self.theme_manager = ThemeManager(self.settings.gui.theme)
+                print("✅ ThemeManager initialized successfully")
+            except Exception as e:
+                print(f"❌ ThemeManager failed: {e}")
+                self.theme_manager = None
 
             # Initialize localization manager
-            self.localization_manager = LocalizationManager(self.settings.gui.language)
+            print("Initializing LocalizationManager...")
+            try:
+                self.localization_manager = LocalizationManager(self.settings.gui.language)
+                print("✅ LocalizationManager initialized successfully")
+            except Exception as e:
+                print(f"❌ LocalizationManager failed: {e}")
+                self.localization_manager = None
 
-            # Apply theme
-            self.theme_manager.apply_theme(self)
+            # Apply theme (only if theme manager exists)
+            if self.theme_manager is not None:
+                print("Applying theme...")
+                try:
+                    self.theme_manager.apply_theme(self)
+                    print("✅ Theme applied successfully")
+                except Exception as e:
+                    print(f"❌ Theme application failed: {e}")
 
-            # Apply translations
-            self.installTranslator(self.localization_manager.get_translator())
+            # Apply translations (only if localization manager exists)
+            if self.localization_manager is not None:
+                print("Installing translator...")
+                try:
+                    self.installTranslator(self.localization_manager.get_translator())
+                    print("✅ Translator installed successfully")
+                except Exception as e:
+                    print(f"❌ Translator installation failed: {e}")
 
             # Initialize main window
-            self.main_window = MainWindow(
-                theme_manager=self.theme_manager,
-                localization_manager=self.localization_manager
-            )
+            print("Initializing MainWindow...")
+            try:
+                self.main_window = MainWindow(
+                    theme_manager=self.theme_manager,
+                    localization_manager=self.localization_manager
+                )
+                print("✅ MainWindow initialized successfully")
+            except Exception as e:
+                print(f"❌ MainWindow initialization failed: {e}")
+                self.main_window = None
 
             _ensure_logger()
             if logger is not None:
-                logger.info("GUI components initialized")
+                logger.info("GUI components initialized (with fallbacks)")
 
         except Exception as e:
             _ensure_logger()
