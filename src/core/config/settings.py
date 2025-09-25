@@ -788,7 +788,7 @@ class Settings(BaseSettings):
         env_nested_delimiter="__",
         case_sensitive=False,
         validate_assignment=True,
-        extra="forbid",
+        extra="ignore",  # Ignore extra fields instead of forbidding them
     )
 
     @model_validator(mode='after')
