@@ -617,25 +617,23 @@ class SymbolManager:
             # Get symbols using the service's built-in session management
             symbols = self.symbol_service.get_all()
 
-            # Temporarily skip database loading to avoid pydantic issues
-            logger.info(f"Found {len(symbols)} symbols in database (loading temporarily disabled)")
+            logger.info(f"Found {len(symbols)} symbols in database")
 
-            # TODO: Re-enable once pydantic ValidationInfo issue is resolved
-            # for symbol_data in symbols:
-            #     # Convert database model to SymbolInfo
-            #     symbol_info = SymbolInfo(
-            #         symbol=symbol_data.symbol,
-            #         description=symbol_data.name or "",
-            #         symbol_type=self._map_market_to_symbol_type(symbol_data.market),
-            #         status=SymbolStatus.ACTIVE if symbol_data.is_tradeable else SymbolStatus.INACTIVE,
-            #         is_tradable=symbol_data.is_tradeable,
-            #         is_visible=True,  # Default value since not in DB
-            #         created_at=symbol_data.created_at,
-            #         updated_at=symbol_data.updated_at
-            #     )
-            #     self._symbols[symbol_data.symbol] = symbol_info
+            for symbol_data in symbols:
+                # Convert database model to SymbolInfo
+                symbol_info = SymbolInfo(
+                    symbol=symbol_data.symbol,
+                    description=symbol_data.name or "",
+                    symbol_type=self._map_market_to_symbol_type(symbol_data.market),
+                    status=SymbolStatus.ACTIVE if symbol_data.is_tradeable else SymbolStatus.INACTIVE,
+                    is_tradable=symbol_data.is_tradeable,
+                    is_visible=True,  # Default value since not in DB
+                    created_at=symbol_data.created_at,
+                    updated_at=symbol_data.updated_at
+                )
+                self._symbols[symbol_data.symbol] = symbol_info
 
-            logger.info(f"Symbol loading from database temporarily disabled")
+            logger.info(f"Loaded {len(self._symbols)} symbols from database")
 
         except Exception as e:
             logger.error(f"Error loading symbols from database: {e}")

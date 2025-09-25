@@ -37,6 +37,8 @@ from src.core.config import get_settings
 from src.core.exceptions import DatabaseError, ConnectionError
 from src.core.logging import get_logger
 from src.database.models.base import Base
+# Import all models to register them with Base.metadata
+from src.database.models import *  # noqa: F401,F403
 
 logger = get_logger(__name__)
 settings = get_settings()
