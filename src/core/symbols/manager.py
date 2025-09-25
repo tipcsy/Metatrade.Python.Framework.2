@@ -589,28 +589,53 @@ class SymbolManager:
         except Exception:
             return SymbolType.UNKNOWN
 
+    def _map_market_to_symbol_type(self, market: str) -> SymbolType:
+        """Map database market field to SymbolType enum."""
+        try:
+            market_upper = market.upper()
+
+            if market_upper in ['FOREX', 'FX']:
+                return SymbolType.FOREX
+            elif market_upper in ['STOCK', 'EQUITY', 'SHARES']:
+                return SymbolType.STOCK
+            elif market_upper in ['COMMODITY', 'COMMODITIES']:
+                return SymbolType.COMMODITY
+            elif market_upper in ['INDEX', 'INDICES']:
+                return SymbolType.INDEX
+            elif market_upper in ['CRYPTO', 'CRYPTOCURRENCY', 'BITCOIN']:
+                return SymbolType.CRYPTO
+            elif market_upper in ['CFD']:
+                return SymbolType.CFD
+            else:
+                return SymbolType.UNKNOWN
+        except Exception:
+            return SymbolType.UNKNOWN
+
     def _load_symbols_from_database(self) -> None:
         """Load symbols from database."""
         try:
-            with self.db_manager.get_session() as session:
-                symbols = self.symbol_service.get_all(session)
+            # Get symbols using the service's built-in session management
+            symbols = self.symbol_service.get_all()
 
-                for symbol_data in symbols:
-                    # Convert database model to SymbolInfo
-                    symbol_info = SymbolInfo(
-                        symbol=symbol_data.symbol,
-                        description=symbol_data.description or "",
-                        symbol_type=SymbolType(symbol_data.symbol_type),
-                        status=SymbolStatus(symbol_data.status),
-                        is_tradable=symbol_data.is_tradable,
-                        is_visible=symbol_data.is_visible,
-                        created_at=symbol_data.created_at,
-                        updated_at=symbol_data.updated_at
-                    )
+            # Temporarily skip database loading to avoid pydantic issues
+            logger.info(f"Found {len(symbols)} symbols in database (loading temporarily disabled)")
 
-                    self._symbols[symbol_data.symbol] = symbol_info
+            # TODO: Re-enable once pydantic ValidationInfo issue is resolved
+            # for symbol_data in symbols:
+            #     # Convert database model to SymbolInfo
+            #     symbol_info = SymbolInfo(
+            #         symbol=symbol_data.symbol,
+            #         description=symbol_data.name or "",
+            #         symbol_type=self._map_market_to_symbol_type(symbol_data.market),
+            #         status=SymbolStatus.ACTIVE if symbol_data.is_tradeable else SymbolStatus.INACTIVE,
+            #         is_tradable=symbol_data.is_tradeable,
+            #         is_visible=True,  # Default value since not in DB
+            #         created_at=symbol_data.created_at,
+            #         updated_at=symbol_data.updated_at
+            #     )
+            #     self._symbols[symbol_data.symbol] = symbol_info
 
-            logger.info(f"Loaded {len(self._symbols)} symbols from database")
+            logger.info(f"Symbol loading from database temporarily disabled")
 
         except Exception as e:
             logger.error(f"Error loading symbols from database: {e}")
