@@ -8,11 +8,13 @@ various types of errors that can occur in the trading framework.
 # Base exceptions
 from .base import (
     BaseFrameworkError,
+    BusinessLogicError,
     ConfigurationError,
     DatabaseError,
     DependencyError,
     FrameworkWarning,
     InitializationError,
+    NotFoundError,
     RateLimitError,
     RetryableError,
     SecurityError,
@@ -123,8 +125,10 @@ from .mt5 import (
 __all__ = [
     # Base exceptions
     "BaseFrameworkError",
+    "BusinessLogicError",
     "ConfigurationError",
     "DatabaseError",
+    "NotFoundError",
     "ValidationError",
     "InitializationError",
     "DependencyError",

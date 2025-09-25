@@ -266,6 +266,70 @@ class DatabaseError(BaseFrameworkError):
             self.add_context("operation", operation)
 
 
+class NotFoundError(BaseFrameworkError):
+    """Exception raised when a requested resource is not found."""
+
+    error_code = "NOT_FOUND_ERROR"
+    error_category = "not_found"
+    severity = "error"
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        resource_type: Optional[str] = None,
+        resource_id: Optional[str] = None,
+        **kwargs: Any,
+    ) -> None:
+        """
+        Initialize not found error.
+
+        Args:
+            message: Error message
+            resource_type: Type of resource that was not found
+            resource_id: ID of the resource that was not found
+            **kwargs: Additional arguments for base class
+        """
+        super().__init__(message, **kwargs)
+
+        if resource_type:
+            self.add_context("resource_type", resource_type)
+        if resource_id:
+            self.add_context("resource_id", resource_id)
+
+
+class BusinessLogicError(BaseFrameworkError):
+    """Exception raised for business logic violations."""
+
+    error_code = "BUSINESS_LOGIC_ERROR"
+    error_category = "business_logic"
+    severity = "error"
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        operation: Optional[str] = None,
+        violation_type: Optional[str] = None,
+        **kwargs: Any,
+    ) -> None:
+        """
+        Initialize business logic error.
+
+        Args:
+            message: Error message
+            operation: Business operation that failed
+            violation_type: Type of business rule violation
+            **kwargs: Additional arguments for base class
+        """
+        super().__init__(message, **kwargs)
+
+        if operation:
+            self.add_context("operation", operation)
+        if violation_type:
+            self.add_context("violation_type", violation_type)
+
+
 class SecurityError(BaseFrameworkError):
     """Exception raised for security-related issues."""
 
