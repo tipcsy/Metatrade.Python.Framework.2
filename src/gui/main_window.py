@@ -29,7 +29,14 @@ from .themes import ThemeManager
 from .localization import LocalizationManager
 from .models import MarketDataModel
 
-logger = get_logger(__name__)
+logger = None  # Will be initialized after LoggerFactory setup
+
+
+def _ensure_logger():
+    """Ensure logger is initialized."""
+    global logger
+    if logger is None:
+        logger = get_logger(__name__)
 
 
 class MainWindow(QMainWindow):
@@ -81,6 +88,7 @@ class MainWindow(QMainWindow):
         # Start update timers
         self._setup_timers()
 
+        _ensure_logger()
         logger.info("Main window initialized")
 
     def _init_window_properties(self) -> None:

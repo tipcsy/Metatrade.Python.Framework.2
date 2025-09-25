@@ -23,7 +23,14 @@ from .main_window import MainWindow
 from .themes import ThemeManager
 from .localization import LocalizationManager
 
-logger = get_logger(__name__)
+logger = None  # Will be initialized after LoggerFactory setup
+
+
+def _ensure_logger():
+    """Ensure logger is initialized."""
+    global logger
+    if logger is None:
+        logger = get_logger(__name__)
 
 
 class MetaTraderApp(QApplication):
@@ -75,6 +82,7 @@ class MetaTraderApp(QApplication):
         # Setup signal handlers
         self._setup_signal_handlers()
 
+        _ensure_logger()
         logger.info("MetaTrader application initialized")
 
     def _setup_application(self) -> None:
@@ -90,6 +98,7 @@ class MetaTraderApp(QApplication):
             icon = QIcon("resources/icons/app_icon.png")
             self.setWindowIcon(icon)
         except Exception:
+            _ensure_logger()
             logger.debug("Application icon not found")
 
         # Font configuration for high DPI displays
@@ -104,6 +113,7 @@ class MetaTraderApp(QApplication):
         # Application behavior
         self.setQuitOnLastWindowClosed(True)
 
+        _ensure_logger()
         logger.debug("Application properties configured")
 
     def _initialize_components(self) -> None:
@@ -127,9 +137,11 @@ class MetaTraderApp(QApplication):
                 localization_manager=self.localization_manager
             )
 
+            _ensure_logger()
             logger.info("GUI components initialized")
 
         except Exception as e:
+            _ensure_logger()
             logger.error(f"Failed to initialize GUI components: {e}")
             self._show_error_message("Initialization Error", str(e))
             sys.exit(1)
@@ -147,15 +159,18 @@ class MetaTraderApp(QApplication):
         # Application signals
         self.aboutToQuit.connect(self._cleanup_before_exit)
 
+        _ensure_logger()
         logger.debug("Signal handlers configured")
 
     def _signal_handler(self, signum: int, frame) -> None:
         """Handle system signals gracefully."""
+        _ensure_logger()
         logger.info(f"Received signal {signum}, initiating shutdown...")
         self.shutdownRequested.emit()
 
     def _handle_shutdown(self) -> None:
         """Handle application shutdown request."""
+        _ensure_logger()
         logger.info("Shutdown requested")
 
         if self.main_window:
@@ -165,6 +180,7 @@ class MetaTraderApp(QApplication):
 
     def _handle_error(self, title: str, message: str) -> None:
         """Handle application errors with user notification."""
+        _ensure_logger()
         logger.error(f"Application error: {title} - {message}")
         self._show_error_message(title, message)
 
@@ -183,6 +199,7 @@ class MetaTraderApp(QApplication):
 
     def _cleanup_before_exit(self) -> None:
         """Cleanup resources before application exit."""
+        _ensure_logger()
         logger.info("Cleaning up before exit...")
 
         try:
@@ -198,9 +215,11 @@ class MetaTraderApp(QApplication):
             if self.localization_manager:
                 self.localization_manager.save_preferences()
 
+            _ensure_logger()
             logger.info("Application cleanup completed")
 
         except Exception as e:
+            _ensure_logger()
             logger.error(f"Error during cleanup: {e}")
 
     def show_main_window(self) -> None:
@@ -210,6 +229,7 @@ class MetaTraderApp(QApplication):
             self.main_window.raise_()
             self.main_window.activateWindow()
         else:
+            _ensure_logger()
             logger.error("Main window not initialized")
 
     def get_theme_manager(self) -> Optional[ThemeManager]:
@@ -264,10 +284,12 @@ def create_application(argv: list[str] = None) -> MetaTraderApp:
     """
     try:
         app = MetaTraderApp(argv)
+        _ensure_logger()
         logger.info("MetaTrader application created successfully")
         return app
 
     except Exception as e:
+        _ensure_logger()
         logger.error(f"Failed to create application: {e}")
         raise BaseFrameworkError(f"Application creation failed: {e}")
 
@@ -286,16 +308,19 @@ def run_application() -> int:
         # Show main window
         app.show_main_window()
 
+        _ensure_logger()
         logger.info("Starting GUI application...")
 
         # Run application
         return app.exec()
 
     except KeyboardInterrupt:
+        _ensure_logger()
         logger.info("Application interrupted by user")
         return 0
 
     except Exception as e:
+        _ensure_logger()
         logger.error(f"Application execution failed: {e}")
         return 1
 
