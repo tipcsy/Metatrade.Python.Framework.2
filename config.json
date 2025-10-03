@@ -1,0 +1,77 @@
+{
+  "system": {
+    "environment": "development",
+    "log_level": "INFO",
+    "data_directory": "./database"
+  },
+  "services": {
+    "backend-api": {
+      "port": 5000,
+      "host": "localhost",
+      "auto_start": true,
+      "path": "services/backend-api/main.py"
+    },
+    "data-service": {
+      "port": 5001,
+      "host": "localhost",
+      "auto_start": true,
+      "auto_restart": true,
+      "path": "services/data-service/main.py",
+      "gap_fill_on_start": true,
+      "tick_collection_interval_ms": 100,
+      "batch_size": 1000
+    },
+    "mt5-service": {
+      "port": 5002,
+      "host": "localhost",
+      "auto_start": true,
+      "auto_restart": true,
+      "path": "services/mt5-service/main.py",
+      "mt5_terminal_path": "C:\\Program Files\\MetaTrader 5\\terminal64.exe",
+      "connection_timeout_seconds": 10
+    },
+    "pattern-service": {
+      "port": 5003,
+      "host": "localhost",
+      "auto_start": true,
+      "auto_restart": true,
+      "path": "services/pattern-service/main.py"
+    },
+    "strategy-service": {
+      "port": 5004,
+      "host": "localhost",
+      "auto_start": false,
+      "auto_restart": true,
+      "path": "services/strategy-service/main.py"
+    },
+    "backtesting-service": {
+      "port": 5006,
+      "host": "localhost",
+      "auto_start": false,
+      "auto_restart": false,
+      "path": "services/backtesting-service/main.py",
+      "max_parallel_backtests": 3
+    },
+    "ai-service": {
+      "port": 5005,
+      "host": "localhost",
+      "auto_start": false,
+      "auto_restart": false,
+      "path": "services/ai-service/main.py"
+    }
+  },
+  "database": {
+    "type": "sqlite",
+    "tick_partition_by": "month",
+    "ohlc_partition_by": "symbol"
+  },
+  "trading": {
+    "symbols": ["EURUSD", "GBPUSD", "USDJPY"],
+    "timeframes": ["M1", "M5", "M15", "H1", "H4", "D1"]
+  },
+  "monitoring": {
+    "health_check_interval_seconds": 5,
+    "metrics_collection_enabled": true,
+    "alert_email": "trader@example.com"
+  }
+}

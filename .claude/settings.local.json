@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rm:*)",
+      "Bash(mkdir:*)",
+      "Bash(tree:*)",
+      "Bash(chmod:*)",
+      "Bash(for service in /home/tipcsy/Metatrade.Python.Framework.2/services/*/)",
+      "Bash(ls:*)",
+      "Bash(done)",
+      "Bash(cat:*)",
+      "Bash(source:*)",
+      "Bash(pip install:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
