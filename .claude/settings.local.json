@@ -15,7 +15,10 @@
       "Bash(python:*)",
       "Bash(pkill:*)",
       "Bash(python3:*)",
-      "Bash(timeout 5 python3 main.py)"
+      "Bash(timeout 5 python3 main.py)",
+      "Bash(npx:*)",
+      "Bash(npm install:*)",
+      "Bash(awk:*)"
     ],
     "deny": [],
     "ask": []

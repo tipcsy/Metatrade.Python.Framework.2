@@ -1,0 +1,124 @@
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h1>MT5 Trading Platform Dashboard</h1>
+    <button mat-raised-button color="primary" (click)="refreshData()">
+      <mat-icon>refresh</mat-icon>
+      Refresh
+    </button>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <!-- Summary Cards -->
+  <div *ngIf="!loading" class="summary-cards">
+    <mat-card class="summary-card">
+      <mat-card-header>
+        <mat-icon class="card-icon">settings</mat-icon>
+        <mat-card-title>Services Status</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="metric-value">{{ getOnlineServicesCount() }} / {{ getTotalServicesCount() }}</div>
+        <div class="metric-label">Services Online</div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="summary-card">
+      <mat-card-header>
+        <mat-icon class="card-icon">trending_up</mat-icon>
+        <mat-card-title>Active Strategies</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="metric-value">{{ getRunningStrategiesCount() }}</div>
+        <div class="metric-label">Running Now</div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="summary-card" [class.profit-positive]="getProfitToday() > 0" [class.profit-negative]="getProfitToday() < 0">
+      <mat-card-header>
+        <mat-icon class="card-icon">attach_money</mat-icon>
+        <mat-card-title>Today's P&L</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="metric-value">{{ getProfitToday() | number:'1.2-2' }} USD</div>
+        <div class="metric-label">Daily Profit/Loss</div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="summary-card" [class.profit-positive]="getTotalProfit() > 0" [class.profit-negative]="getTotalProfit() < 0">
+      <mat-card-header>
+        <mat-icon class="card-icon">account_balance</mat-icon>
+        <mat-card-title>Total P&L</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="metric-value">{{ getTotalProfit() | number:'1.2-2' }} USD</div>
+        <div class="metric-label">All Time</div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Services List -->
+  <mat-card *ngIf="!loading" class="services-card">
+    <mat-card-header>
+      <mat-card-title>Microservices Status</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="services-list">
+        <div *ngFor="let service of services" class="service-item">
+          <div class="service-info">
+            <div class="service-name">{{ service.name }}</div>
+            <mat-chip [class]="getServiceStatusClass(service.status)">
+              {{ service.status }}
+            </mat-chip>
+          </div>
+          <div class="service-metrics" *ngIf="service.cpu !== undefined">
+            <span class="metric">CPU: {{ service.cpu | number:'1.1-1' }}%</span>
+            <span class="metric">Memory: {{ service.memory | number:'1.1-1' }}%</span>
+          </div>
+          <div class="service-actions">
+            <button mat-icon-button color="primary" (click)="controlService(service.name, 'start')"
+                    [disabled]="service.status === 'online'" matTooltip="Start Service">
+              <mat-icon>play_arrow</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="controlService(service.name, 'stop')"
+                    [disabled]="service.status === 'offline'" matTooltip="Stop Service">
+              <mat-icon>stop</mat-icon>
+            </button>
+            <button mat-icon-button (click)="controlService(service.name, 'restart')"
+                    [disabled]="service.status === 'offline'" matTooltip="Restart Service">
+              <mat-icon>refresh</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Active Strategies -->
+  <mat-card *ngIf="!loading && strategies.length > 0" class="strategies-card">
+    <mat-card-header>
+      <mat-card-title>Active Strategies</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="strategies-list">
+        <div *ngFor="let strategy of strategies" class="strategy-item">
+          <div class="strategy-header">
+            <div class="strategy-name">{{ strategy.name }}</div>
+            <mat-chip [class]="strategy.status === 'running' ? 'status-online' : 'status-offline'">
+              {{ strategy.status }}
+            </mat-chip>
+          </div>
+          <div class="strategy-info">
+            <span>Mode: {{ strategy.mode }}</span>
+            <span>Symbols: {{ strategy.symbols.join(', ') }}</span>
+            <span class="profit" [class.profit-positive]="strategy.profitToday > 0" [class.profit-negative]="strategy.profitToday < 0">
+              Today: {{ strategy.profitToday | number:'1.2-2' }} USD
+            </span>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

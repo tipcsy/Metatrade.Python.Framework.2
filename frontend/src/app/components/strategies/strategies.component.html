@@ -1,0 +1,193 @@
+<div class="strategies-container">
+  <div class="header">
+    <h1>Strategy Management</h1>
+    <button mat-raised-button color="primary" (click)="showCreateForm = !showCreateForm">
+      <mat-icon>add</mat-icon>
+      New Strategy
+    </button>
+  </div>
+
+  <!-- Create Strategy Form -->
+  <mat-card *ngIf="showCreateForm" class="create-form">
+    <mat-card-header>
+      <mat-card-title>Create New Strategy</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="strategyForm" (ngSubmit)="createStrategy()">
+        <div class="form-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>Strategy Name</mat-label>
+            <input matInput formControlName="name" placeholder="My Strategy">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Mode</mat-label>
+            <mat-select formControlName="mode">
+              <mat-option value="paper">Paper Trading</mat-option>
+              <mat-option value="live">Live Trading</mat-option>
+              <mat-option value="off">Off</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Symbols (comma-separated)</mat-label>
+            <input matInput formControlName="symbols" placeholder="EURUSD, GBPUSD">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Timeframe</mat-label>
+            <mat-select formControlName="timeframe">
+              <mat-option value="M1">M1</mat-option>
+              <mat-option value="M5">M5</mat-option>
+              <mat-option value="M15">M15</mat-option>
+              <mat-option value="M30">M30</mat-option>
+              <mat-option value="H1">H1</mat-option>
+              <mat-option value="H4">H4</mat-option>
+              <mat-option value="D1">D1</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="form-actions">
+          <button mat-button type="button" (click)="showCreateForm = false">Cancel</button>
+          <button mat-raised-button color="primary" type="submit">Create Strategy</button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Strategies Table -->
+  <mat-card class="strategies-table">
+    <mat-card-header>
+      <mat-card-title>Active Strategies</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <table mat-table [dataSource]="strategies" class="full-width-table">
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Name</th>
+          <td mat-cell *matCellDef="let strategy">{{ strategy.name }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="mode">
+          <th mat-header-cell *matHeaderCellDef>Mode</th>
+          <td mat-cell *matCellDef="let strategy">
+            <mat-chip>{{ strategy.mode }}</mat-chip>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="symbols">
+          <th mat-header-cell *matHeaderCellDef>Symbols</th>
+          <td mat-cell *matCellDef="let strategy">{{ strategy.symbols.join(', ') }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let strategy">
+            <mat-chip [class]="strategy.status === 'running' ? 'status-running' : 'status-stopped'">
+              {{ strategy.status }}
+            </mat-chip>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="profitToday">
+          <th mat-header-cell *matHeaderCellDef>Today P&L</th>
+          <td mat-cell *matCellDef="let strategy">
+            <span [class.profit-positive]="strategy.profitToday > 0" [class.profit-negative]="strategy.profitToday < 0">
+              {{ strategy.profitToday | number:'1.2-2' }} USD
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="totalProfit">
+          <th mat-header-cell *matHeaderCellDef>Total P&L</th>
+          <td mat-cell *matCellDef="let strategy">
+            <span [class.profit-positive]="strategy.totalProfit > 0" [class.profit-negative]="strategy.totalProfit < 0">
+              {{ strategy.totalProfit | number:'1.2-2' }} USD
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let strategy">
+            <button mat-icon-button color="primary" (click)="startStrategy(strategy.id)"
+                    [disabled]="strategy.status === 'running'" matTooltip="Start">
+              <mat-icon>play_arrow</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="stopStrategy(strategy.id)"
+                    [disabled]="strategy.status === 'stopped'" matTooltip="Stop">
+              <mat-icon>stop</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="deleteStrategy(strategy.id)" matTooltip="Delete">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Open Positions -->
+  <mat-card class="positions-table" *ngIf="positions.length > 0">
+    <mat-card-header>
+      <mat-card-title>Open Positions</mat-card-title>
+      <div class="total-profit" [class.profit-positive]="getTotalProfit() > 0" [class.profit-negative]="getTotalProfit() < 0">
+        Total P&L: {{ getTotalProfit() | number:'1.2-2' }} USD
+      </div>
+    </mat-card-header>
+    <mat-card-content>
+      <table mat-table [dataSource]="positions" class="full-width-table">
+        <ng-container matColumnDef="symbol">
+          <th mat-header-cell *matHeaderCellDef>Symbol</th>
+          <td mat-cell *matCellDef="let position">{{ position.symbol }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef>Type</th>
+          <td mat-cell *matCellDef="let position">
+            <mat-chip [class]="position.type === 'BUY' ? 'type-buy' : 'type-sell'">
+              {{ position.type }}
+            </mat-chip>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="volume">
+          <th mat-header-cell *matHeaderCellDef>Volume</th>
+          <td mat-cell *matCellDef="let position">{{ position.volume }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="openPrice">
+          <th mat-header-cell *matHeaderCellDef>Open Price</th>
+          <td mat-cell *matCellDef="let position">{{ position.openPrice | number:'1.5-5' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="currentPrice">
+          <th mat-header-cell *matHeaderCellDef>Current Price</th>
+          <td mat-cell *matCellDef="let position">{{ position.currentPrice | number:'1.5-5' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="profit">
+          <th mat-header-cell *matHeaderCellDef>P&L</th>
+          <td mat-cell *matCellDef="let position">
+            <span [class.profit-positive]="position.profit > 0" [class.profit-negative]="position.profit < 0">
+              {{ position.profit | number:'1.2-2' }} USD
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let position">
+            <button mat-raised-button color="warn" (click)="closePosition(position.id)">Close</button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="positionColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: positionColumns;"></tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
+</div>

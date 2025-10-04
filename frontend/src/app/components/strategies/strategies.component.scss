@@ -1,0 +1,98 @@
+.strategies-container {
+  padding: 24px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+
+  h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 500;
+  }
+}
+
+.create-form {
+  margin-bottom: 24px;
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+  }
+}
+
+.strategies-table,
+.positions-table {
+  margin-bottom: 24px;
+
+  mat-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+
+    .total-profit {
+      font-size: 18px;
+      font-weight: 600;
+
+      &.profit-positive {
+        color: #4CAF50;
+      }
+
+      &.profit-negative {
+        color: #F44336;
+      }
+    }
+  }
+}
+
+.full-width-table {
+  width: 100%;
+
+  th {
+    font-weight: 600;
+  }
+
+  .profit-positive {
+    color: #4CAF50;
+    font-weight: 500;
+  }
+
+  .profit-negative {
+    color: #F44336;
+    font-weight: 500;
+  }
+
+  .status-running {
+    background-color: #4CAF50 !important;
+    color: white !important;
+  }
+
+  .status-stopped {
+    background-color: #9E9E9E !important;
+    color: white !important;
+  }
+
+  .type-buy {
+    background-color: #4CAF50 !important;
+    color: white !important;
+  }
+
+  .type-sell {
+    background-color: #F44336 !important;
+    color: white !important;
+  }
+}
