@@ -3,37 +3,46 @@
     {
       "name": "data-service",
       "port": 5001,
-      "path": "../data-service",
+      "path": "data-service",
       "command": "python main.py",
       "auto_start": true,
-      "restart_on_failure": true,
+      "auto_restart": true,
       "health_endpoint": "/health"
     },
     {
       "name": "mt5-service",
       "port": 5002,
-      "path": "../mt5-service",
+      "path": "mt5-service",
       "command": "python main.py",
-      "auto_start": true,
-      "restart_on_failure": true,
+      "auto_start": false,
+      "auto_restart": true,
       "health_endpoint": "/health"
     },
     {
       "name": "strategy-service",
       "port": 5003,
-      "path": "../strategy-service",
+      "path": "strategy-service",
       "command": "python main.py",
       "auto_start": true,
-      "restart_on_failure": true,
+      "auto_restart": true,
       "health_endpoint": "/health"
     },
     {
       "name": "pattern-service",
       "port": 5004,
-      "path": "../pattern-service",
+      "path": "pattern-service",
       "command": "python main.py",
-      "auto_start": false,
-      "restart_on_failure": true,
+      "auto_start": true,
+      "auto_restart": true,
+      "health_endpoint": "/health"
+    },
+    {
+      "name": "ai-service",
+      "port": 5005,
+      "path": "ai-service",
+      "command": "python main.py",
+      "auto_start": true,
+      "auto_restart": true,
       "health_endpoint": "/health"
     }
   ],

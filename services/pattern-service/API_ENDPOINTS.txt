@@ -1,0 +1,96 @@
+========================================
+Pattern & Indicator Service API Endpoints
+Port: 5004
+========================================
+
+1. HEALTH CHECK
+   GET /health
+   Returns: Service health status
+
+2. CALCULATE INDICATOR
+   GET /indicators/{type}?symbol={symbol}&timeframe={timeframe}&period={period}
+   
+   Supported types:
+   - sma: Simple Moving Average
+   - ema: Exponential Moving Average
+   - rsi: Relative Strength Index
+   - macd: MACD (Moving Average Convergence Divergence)
+   - bbands: Bollinger Bands
+   - atr: Average True Range
+   - stochastic: Stochastic Oscillator
+   - adx: Average Directional Index
+   - obv: On-Balance Volume
+   
+   Example: GET /indicators/rsi?symbol=EURUSD&timeframe=H1&period=14
+
+3. DETECT CANDLESTICK PATTERNS
+   GET /patterns/candlestick?symbol={symbol}&timeframe={timeframe}
+   
+   Detects:
+   - Doji
+   - Hammer
+   - Shooting Star
+   - Bullish/Bearish Engulfing
+   - Morning/Evening Star
+   - Three White Soldiers
+   - Three Black Crows
+   
+   Example: GET /patterns/candlestick?symbol=EURUSD&timeframe=H1
+
+4. DETECT CHART PATTERNS
+   GET /patterns/chart?symbol={symbol}&timeframe={timeframe}
+   
+   Detects:
+   - Support levels
+   - Resistance levels
+   - Trend direction (UPTREND/DOWNTREND/SIDEWAYS)
+   
+   Example: GET /patterns/chart?symbol=EURUSD&timeframe=H1
+
+5. SCAN MULTIPLE SYMBOLS
+   POST /scan
+   Body: {
+     "symbols": ["EURUSD", "GBPUSD"],
+     "timeframes": ["H1", "H4"],
+     "indicators": ["sma", "rsi", "macd"],  // optional
+     "patterns": true
+   }
+   
+   Scans multiple symbols/timeframes for patterns and indicators
+
+6. FIND TRADING OPPORTUNITIES
+   POST /scan/opportunities?min_confidence={confidence}
+   Body: {
+     "symbols": ["EURUSD", "GBPUSD"],
+     "timeframes": ["H1", "H4"]
+   }
+   
+   Finds high-confidence trading opportunities based on patterns and indicators
+
+7. COMPLETE ANALYSIS
+   GET /analyze/{symbol}/{timeframe}?indicators={comma_separated_list}
+   
+   Performs complete technical analysis including all indicators and patterns
+   
+   Example: GET /analyze/EURUSD/H1?indicators=sma,ema,rsi,macd
+
+========================================
+Response Format
+========================================
+
+All responses follow this structure:
+{
+  "success": true/false,
+  "data": { ... },
+  "error": "message" (if applicable)
+}
+
+========================================
+Notes
+========================================
+
+- All indicator calculations use pure Python/Pandas/Numpy (no ta-lib)
+- Data is fetched from data-service (port 5001)
+- Mathematical accuracy is verified against standard TA formulas
+- Pattern detection includes confidence scores for trading signals
+- Service supports real-time and historical data analysis
